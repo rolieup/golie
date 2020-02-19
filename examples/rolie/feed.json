@@ -1,0 +1,58 @@
+{
+  "feed": {
+    "id": "gov.nist.nvd.cve.recent",
+    "title": "ROLIE CVE-Recent",
+    "link": [
+      {
+        "rel": "self",
+        "href": "https://rolie.nvd.nist.gov/f/CVE-Recent"
+      },
+      {
+        "rel": "service",
+        "href": "https://rolie.nvd.nist.gov/s/service"
+      },
+      {
+        "rel": "NVDMeta",
+        "href": "https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-recent.meta"
+      }
+    ],
+    "category": {
+      "scheme": "urn:ietf:params:rolie:category:information-type",
+      "term": "vulnerability"
+    },
+    "updated": "2020-02-07T16:15Z",
+    "entry": [
+      {
+        "id": "CVE-2010-3917-69956a2702ad",
+        "title": "CVE-2010-3917 from the NVD JSON Feed represented in a ROLIE Entry",
+        "link": [
+          {
+            "rel": "self",
+            "href": "https://rolie.nvd.nist.gov/e/CVE-2010-3917"
+          },
+          {
+            "rel": "CVEDict",
+            "href": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2010-3917"
+          }
+        ],
+        "published": "2020-02-07T16:15Z",
+        "updated": "2020-02-07T16:15Z",
+        "summary": {
+          "content": "Google Chrome before 3.0 does not properly handle XML documents, which allows remote attackers to obtain sensitive information via a crafted web site."
+        },
+        "content": {
+          "type": "text/html",
+          "src": "https://nvd.nist.gov/vuln/detail/CVE-2010-3917"
+        },
+        "format": {
+          "schema": "https://csrc.nist.gov/schema/nvd/feed/1.1/nvd_cve_feed_json_1.1.schema",
+          "version": "1.1"
+        },
+        "property": {
+          "name": "urn:ietf:params:rolie:property:content-id",
+          "value": "CVE-2010-3917"
+        }
+      }
+    ]
+  }
+}

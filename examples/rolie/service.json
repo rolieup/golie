@@ -1,0 +1,67 @@
+{
+  "service": {
+    "workspace": [
+      {
+        "title": "The National Vulnerability Database - Public",
+        "collection": [
+          {
+            "href": "https://rolie.nvd.nist.gov/f/CVE-Recent",
+            "title": "CVE-Recent",
+            "link": {
+              "rel": "service",
+              "href": "https://rolie.nvd.nist.gov/s/service"
+            },
+            "categories": {
+              "fixed": "yes",
+              "category": [
+                {
+                  "scheme": "urn:ietf:params:rolie:category:information-type",
+                  "term": "vulnerability"
+                }
+              ]
+            }
+          },
+          {
+            "href": "https://rolie.nvd.nist.gov/f/CVE-2019",
+            "title": "CVE-Recent",
+            "link": {
+              "rel": "service",
+              "href": "https://rolie.nvd.nist.gov/s/service"
+            },
+            "categories": {
+              "fixed": "yes",
+              "category": [
+                {
+                  "scheme": "urn:ietf:params:rolie:category:information-type",
+                  "term": "vulnerability"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "title": "The National Vulnerability Database - Private",
+        "collection": [
+          {
+            "href": "https://rolie.nvd.nist.gov/f/CVEList",
+            "title": "NVD CVE List - Authenticated",
+            "link": {
+              "rel": "service",
+              "href": "https://rolie.nvd.nist.gov/s/service"
+            },
+            "categories": {
+              "fixed": "yes",
+              "category": [
+                {
+                  "scheme": "urn:ietf:params:rolie:category:information-type",
+                  "term": "incident"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

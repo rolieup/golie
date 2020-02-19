@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service xmlns="https://www.w3.org/2007/app" xmlns:atom="https://www.w3.org/2005/Atom">
+  <workspace>
+    <atom:title>The National Vulnerability Database - Public</atom:title>
+    <collection href="https://rolie.nvd.nist.gov/f/CVE-Recent">
+      <atom:title>CVE-Recent</atom:title>
+      <atom:link rel="service" href="https://rolie.nvd.nist.gov/s/service"/>
+      <categories fixed="yes">
+        <atom:category scheme="urn:ietf:params:rolie:category:information-type" term="vulnerability"/>
+      </categories>
+    </collection>
+    <collection href="https://rolie.nvd.nist.gov/f/CVE-2019">
+      <atom:title>CVE-Recent</atom:title>
+      <atom:link rel="service" href="https://rolie.nvd.nist.gov/s/service"/>
+      <categories fixed="yes">
+        <atom:category scheme="urn:ietf:params:rolie:category:information-type" term="vulnerability"/>
+      </categories>
+    </collection>
+  </workspace>
+  <workspace>
+    <atom:title>The National Vulnerability Database - Private</atom:title>
+    <collection href="https://rolie.nvd.nist.gov/f/CVEList">
+      <atom:title>NVD CVE List - Authenticated</atom:title>
+      <atom:link rel="service" href="https://rolie.nvd.nist.gov/s/service"/>
+      <categories fixed="yes">
+        <atom:category scheme="urn:ietf:params:rolie:category:information-type" term="incident"/>
+      </categories>
+    </collection>
+  </workspace>
+</service>
