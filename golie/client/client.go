@@ -17,7 +17,7 @@ import (
 )
 
 func Client() {
-	rolieserver := "http://localhost:3000/feed"
+	rolieserver := "http://localhost:3000/"
 	caFile := "../examples/certs/cert.pem"
 	certFile := "../examples/certs/cert.pem"
 	keyFile := "../examples/certs/key.pem"
