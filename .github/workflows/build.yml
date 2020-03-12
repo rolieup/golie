@@ -16,16 +16,16 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
 
-    - name: Set up GO 1.13
+    - name: Set up Go ${{ matrix.go-version }}
       uses: actions/setup-go@v1
       with:
         go-version: ${{ matrix.go-version }}
       id: go
 
-    - name: Check out code into the GO module directory
+    - name: Check out code into the Go module directory
       uses: actions/checkout@v2
 
-    - name: Get GO dependencies
+    - name: Get Go dependencies
       run: go get -v -t -d ./...
 
     - name: Build Golie client
