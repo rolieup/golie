@@ -1,0 +1,35 @@
+name: Golie Build CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest, ubuntu-latest]
+        go-version: [1.13.x, 1.14.x]
+
+    runs-on: ${{ matrix.os }}
+    steps:
+
+    - name: Set up GO 1.13
+      uses: actions/setup-go@v1
+      with:
+        go-version: ${{ matrix.go-version }}
+      id: go
+
+    - name: Check out code into the GO module directory
+      uses: actions/checkout@v2
+
+    - name: Get GO dependencies
+      run: go get -v -t -d ./...
+
+    - name: Build Golie client
+      run: go build -v cmd/golie/main.go
+
+    - name: Build Golie server
+      run: go build -v cmd/golied/main.go
