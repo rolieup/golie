@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+  <?ifndef var.VERSION?>
+  <?error VERSION must be defined via command line argument?>
+  <?endif?>
+
+  <!--?ifndef var.ManSourceDir?>
+  <?define ManSourceDir = "bin/windows" ?>
+  <?endif?-->
+
+  <Product Name="Golie $(var.VERSION)" Id="*" UpgradeCode="3F5D0C26-69D9-42DA-9FFF-6E9D77626BF3" Version="$(var.VERSION)" Language="1033" Manufacturer="Golie Project">
+
+    <Package Id="*" Keywords="Installer" Description="Golie $(var.VERSION) Installer" Comments="CC0 1.0 Universal" Manufacturer="Golie Project" InstallScope="perMachine" InstallerVersion="100" Compressed="yes"/>
+    <Media Id="1" Cabinet="Golie.cab" EmbedCab="yes"/>
+    <Property Id="DiskPrompt" Value="Golie $(var.VERSION) Installation"/>
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+
+      <Directory Id="ProgramFilesFolder" Name="PFiles">
+        <Directory Id="INSTALLDIR" Name="Golie">
+          <Component Id="INSTALLDIR_Component" Guid="7C65B40C-1407-4E2C-A631-198EBDE2D350">
+            <CreateFolder/>
+          </Component>
+          <Component Id="MainExecutable" Guid="D6A1862C-AAFB-43D2-9E77-B7412A297D68">
+            <File Id="D733C31D-B5E8-4E74-AE92-6DD313B40F63" Name="golie-server.exe" Source="bin/golie-server.exe"/>
+            <ServiceInstall Id="ReportingServiceInstaller"
+            Type="ownProcess"
+            Vital="yes"
+            Name="golie-server"                    
+            DisplayName="Golie Server"
+            Description="A ROLIE-compliant server written in Go"
+            ErrorControl="ignore"
+            Account="NT AUTHORITY\LocalService"
+            Start="demand"
+            Interactive="no" />
+            <File Id="5D9D80B4-543A-479A-BDF6-ABB5C9995B7D" Name="golie-client.exe" Source="bin/golie-client.exe"/>
+          </Component>
+        </Directory>
+      </Directory>
+    </Directory>
+
+    <Property Id="setx" Value="setx.exe"/>
+    <CustomAction Id="ChangePath" ExeCommand="PATH &quot;%PATH%;[INSTALLDIR] &quot;" Property="setx" Execute="deferred" Impersonate="yes" Return="check"/>
+
+    <Feature Id="Complete" Level="1">
+      <ComponentRef Id="INSTALLDIR_Component"/>
+      <ComponentRef Id="MainExecutable"/>
+      <!--ComponentGroupRef Id="ManFiles"/-->
+    </Feature>
+
+    <!--Icon Id="rolie.ico" SourceFile="contrib/msi/rolie-logo.ico"/>
+    <Property Id="ARPPRODUCTICON" Value="rolie.ico"/-->
+
+
+
+    <InstallExecuteSequence>
+      <RemoveExistingProducts Before="InstallInitialize"/>
+      <Custom Action="ChangePath" After="InstallServices">NOT Installed</Custom>
+    </InstallExecuteSequence>
+
+  </Product>
+</Wix>
