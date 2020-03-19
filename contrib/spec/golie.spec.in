@@ -1,0 +1,57 @@
+%global goipath         https://github.com/rolieup/golie
+Version:                2.1.9
+
+%gometa
+
+%global common_description %{expand:
+Package jose aims to provide an implementation of the Javascript Object
+Signing and Encryption set of standards. This includes support for JSON Web
+Encryption, JSON Web Signature, and JSON Web Token standards.}
+
+%global golicenses    LICENSE
+%global godocs        *.md
+
+%global godevelheader %{expand:
+# The devel package will usually benefit from corresponding project binaries.
+Requires:  %{name} = %{version}-%{release}
+}
+
+Name:           %{goname}
+Release:        1%{?dist}
+Summary:        An implementation of ROLIE standards in Go
+License:        CC0
+URL:            %{gourl}
+Source0:        %{gosource}
+
+BuildRequires: golang(github.com/sirupsen/logrus)
+BuildRequires: golang(github.com/spf13/cobra)
+
+%description
+%{common_description}
+
+%gopkg
+
+%prep
+%goprep
+
+%build
+for cmd in jose-util jwk-keygen; do
+  %gobuild -o %{gobuilddir}/bin/$(basename $cmd) %{goipath}/$cmd
+done
+
+%install
+%gopkginstall
+install -m 0755 -vd                     %{buildroot}%{_bindir}
+install -m 0755 -vp %{gobuilddir}/bin/* %{buildroot}%{_bindir}/
+
+%check
+%gocheck
+
+%files
+%license %{golicenses}
+%doc %{godocs}
+%{_bindir}/*
+
+%gopkgfiles
+
+%changelog
