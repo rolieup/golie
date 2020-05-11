@@ -54,7 +54,6 @@ func init() {
 
 	cobra.OnInitialize(initConfig)
 	rootCmd.TraverseChildren = true
-	fmt.Println(path.Base(os.Args[0]))
 	rootCmd.Version = fmt.Sprintf("%s, build: %s, date: %s", version.Version, version.Commit, version.Date)
 	rootCmd.PersistentFlags().BoolVar(&globalFlags.Debug, "debug", false, "Run in debug mode")
 	rootCmd.PersistentFlags().StringVar(&globalFlags.Loglevel, loglevel, "error", `Set log verbosity. Options are "debug", "info", "warn" or "error".`)
@@ -79,7 +78,8 @@ func setup(cmd *cobra.Command) error {
 	log.SetLevel(loglevel)
 	if globalFlags.Debug {
 		log.SetLevel(log.DebugLevel)
-		log.Debug("Running server in DEBUG mode. DO NOT USE DEBUG mode in production!")
+		log.Debug("Running server in DEBUG mode.")
+		log.Warning("DO NOT USE DEBUG mode in production!")
 	}
 
 	return nil

@@ -40,6 +40,7 @@ func Server(debug bool) {
 	tlsConfig := &tls.Config{
 		ClientCAs:  caCertPool,
 		ClientAuth: tls.RequireAndVerifyClientCert,
+		MinVersion: tls.VersionTLS12,
 	}
 	tlsConfig.BuildNameToCertificate()
 
@@ -97,15 +98,46 @@ func serverShutdown(srv *http.Server, idleConnsClosed chan struct{}) {
 }
 
 func service(w http.ResponseWriter, r *http.Request) {
-	fp := path.Join("../examples/rolie/service.xml")
+	fp := path.Join("../examples/rolie/service.json")
+	//fp := path.Join("../examples/rolie/service.xml")
 	log.Infof("Received %s request from %s for ROLIE Service document at %s", r.Method, r.RemoteAddr, fp)
-	w.Header().Set("Content-Type", "application/atomsvc+xml; charset=utf-8")
+	acpt := r.Header["Accept"]
+	if len(acpt) > 0 {
+		acpt := r.Header["Accept"]
+	}
+	switch acpt[0] {
+	case acpt == "application/atomsvc+xml":
+		log.Infof("Setting Content-Type: %s", acpt)
+		w.Header().Set("Content-Type", "application/atomsvc+xml; charset=utf-8")
+	case acpt == "application/json":
+		log.Infof("Setting Content-Type: %s", acpt)
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	default:
+		w.Header().Set("Content-Type", "application/atomsvc+xml; charset=utf-8")
+	}
+
 	http.ServeFile(w, r, fp)
 }
 
 func feed(w http.ResponseWriter, r *http.Request) {
 	fp := path.Join("../examples/rolie/feed.xml")
 	log.Infof("Received %s request from %s for ROLIE Feed at %s", r.Method, r.RemoteAddr, fp)
+	switch acpt := r.Header["Accept"][0]; {
+	case acpt == "application/atom+xml":
+		log.Infof("Setting Content-Type: %s", acpt)
+		w.Header().Set("Content-Type", "application/atom+xml; charset=utf-8")
+	case acpt == "application/json":
+		log.Infof("Setting Content-Type: %s", acpt)
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	}
+
+	http.ServeFile(w, r, fp)
+}
+
+func entry(w http.ResponseWriter, r *http.Request) {
+	fp := path.Join("../examples/rolie/feed.xml")
+	log.Infof("Received %s request from %s for ROLIE Feed at %s", r.Method, r.RemoteAddr, fp)
 	w.Header().Set("Content-Type", "application/atom+xml; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
 	http.ServeFile(w, r, fp)
 }
