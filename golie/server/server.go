@@ -102,14 +102,11 @@ func service(w http.ResponseWriter, r *http.Request) {
 	//fp := path.Join("../examples/rolie/service.xml")
 	log.Infof("Received %s request from %s for ROLIE Service document at %s", r.Method, r.RemoteAddr, fp)
 	acpt := r.Header["Accept"]
-	if len(acpt) > 0 {
-		acpt := r.Header["Accept"]
-	}
 	switch acpt[0] {
-	case acpt == "application/atomsvc+xml":
+	case "application/atomsvc+xml":
 		log.Infof("Setting Content-Type: %s", acpt)
 		w.Header().Set("Content-Type", "application/atomsvc+xml; charset=utf-8")
-	case acpt == "application/json":
+	case "application/json":
 		log.Infof("Setting Content-Type: %s", acpt)
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	default:
