@@ -49,8 +49,8 @@ type Entry struct {
 	Author    *Person   `xml:"author,omitempty" json:"author,omitempty"`
 	Summary   *Text     `xml:"summary,omitempty" json:"summary,omitempty"`
 	Content   *Text     `xml:"content,omitempty" json:"content,omitempty"`
-	Format    *Format   `xml:"rolie:format,omitempty" json:"format,omitempty"`
-	Property  *Property `xml:"rolie:property,omitempty" json:"property,omitempty"`
+	Format    *Format   `xml:"urn:ietf:params:xml:ns:rolie-1.0 format,omitempty" json:"format,omitempty"`
+	Property  *Property `xml:"urn:ietf:params:xml:ns:rolie-1.0 property,omitempty" json:"property,omitempty"`
 }
 
 type Link struct {
