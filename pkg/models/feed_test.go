@@ -15,7 +15,7 @@ import (
 )
 
 func TestCompareXMLandJSON(t *testing.T) {
-	xmlFile := "../../examples/rolie/feed.xml"
+	xmlFile := "../../examples/rolie/feed/gov.nist.nvd.cve.recent.xml"
 	base := filepath.Base(xmlFile)
 	name := strings.TrimSuffix(base, filepath.Ext(base))
 
@@ -31,7 +31,7 @@ func TestCompareXMLandJSON(t *testing.T) {
 		panic(err)
 	}
 
-	jsonFile := "../../examples/rolie/feed.json"
+	jsonFile := "../../examples/rolie/feed/gov.nist.nvd.cve.recent.json"
 	jsonParsedRoot := &models.JSONFeedRoot{}
 	jsonBytes, err := ioutil.ReadFile(jsonFile)
 	if err != nil {

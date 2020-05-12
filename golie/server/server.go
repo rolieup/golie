@@ -117,7 +117,7 @@ func service(w http.ResponseWriter, r *http.Request) {
 }
 
 func feed(w http.ResponseWriter, r *http.Request) {
-	fp := path.Join("../examples/rolie/feed.xml")
+	fp := path.Join("../examples/rolie/feed/gov.nist.nvd.cve.recent.xml")
 	log.Infof("Received %s request from %s for ROLIE Feed at %s", r.Method, r.RemoteAddr, fp)
 	switch acpt := r.Header["Accept"][0]; {
 	case acpt == "application/atom+xml":
@@ -132,7 +132,7 @@ func feed(w http.ResponseWriter, r *http.Request) {
 }
 
 func entry(w http.ResponseWriter, r *http.Request) {
-	fp := path.Join("../examples/rolie/feed.xml")
+	fp := path.Join("../examples/rolie/feed/gov.nist.nvd.cve.recent.xml")
 	log.Infof("Received %s request from %s for ROLIE Feed at %s", r.Method, r.RemoteAddr, fp)
 	w.Header().Set("Content-Type", "application/atom+xml; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
