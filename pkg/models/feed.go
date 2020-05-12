@@ -13,7 +13,7 @@ type JSONFeedRoot struct {
 }
 
 type Feed struct {
-	XMLName     xml.Name     `xml:"http://www.w3.org/2005/Atom feed" json:"-"`
+	XMLName     xml.Name     `xml:"feed" json:"-"`
 	Lang        string       `xml:"xml:lang,attr" json:"-"`
 	Roliens     string       `xml:"xmlns:rolie,attr" json:"-"`
 	ID          string       `xml:"id" json:"id"`
