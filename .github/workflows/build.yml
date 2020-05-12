@@ -33,3 +33,6 @@ jobs:
 
     - name: Build Golie server
       run: go build -v cmd/golied/main.go
+
+    - name: Unit tests
+      run: go test ./...
