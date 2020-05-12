@@ -1,0 +1,39 @@
+{
+  "feed": {
+    "id": "2a7e265a-39bc-43f2-b711-b8fd9264b5c9",
+    "title": "\n      Atom-formatted representation of\n      a Feed of XML vulnerability documents\n  ",
+    "link": [
+      {
+        "rel": "self",
+        "href": "https://example.org/provider/public/vulns"
+      },
+      {
+        "rel": "service",
+        "href": "https://example.org/rolie/servicedocument"
+      }
+    ],
+    "category": {
+      "scheme": "urn:ietf:params:rolie:category:information-type",
+      "term": "vulnerability"
+    },
+    "updated": "2016-05-04T18:13:51.0Z",
+    "entry": [
+      {
+        "id": "dd786dba-88e6-440b-9158-b8fae67ef67c",
+        "title": "Sample Vulnerability",
+        "published": "2015-08-04T18:13:51.0Z",
+        "updated": "2015-08-05T18:13:51.0Z",
+        "summary": {
+          "content": "A vulnerability issue identified by CVE-..."
+        },
+        "content": {
+          "type": "application/xml",
+          "src": "https://example.org/provider/vulns/123456/data"
+        },
+        "format": {
+          "schema": "urn:ietf:params:xml:ns:exampleformat"
+        }
+      }
+    ]
+  }
+}
