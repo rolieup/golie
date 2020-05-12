@@ -15,33 +15,28 @@ import (
 )
 
 func TestCompareXMLandJSON(t *testing.T) {
-	xmlFile := "../../examples/rolie/feed/gov.nist.nvd.cve.recent.xml"
-	base := filepath.Base(xmlFile)
-	name := strings.TrimSuffix(base, filepath.Ext(base))
+	feedFiles, err := filepath.Glob("../../examples/rolie/feed/*.xml")
+	assert.Nil(t, err)
+	assert.NotEmpty(t, feedFiles)
+	for _, xmlFile := range feedFiles {
+		base := filepath.Base(xmlFile)
+		name := strings.TrimSuffix(base, filepath.Ext(base))
 
-	fmt.Printf("Testing parsing of %s... ", name)
-	xmlReader, err := os.Open(xmlFile)
-	if err != nil {
-		panic(err)
-	}
-	xmlParsed := &models.Feed{}
-	decoder := xml.NewDecoder(xmlReader)
-	err = decoder.Decode(xmlParsed)
-	if err != nil {
-		panic(err)
-	}
+		fmt.Printf("Testing parsing of %s... ", name)
+		xmlReader, err := os.Open(xmlFile)
+		assert.Nil(t, err)
+		xmlParsed := &models.Feed{}
+		decoder := xml.NewDecoder(xmlReader)
+		assert.Nil(t, decoder.Decode(xmlParsed))
 
-	jsonFile := "../../examples/rolie/feed/gov.nist.nvd.cve.recent.json"
-	jsonParsedRoot := &models.JSONFeedRoot{}
-	jsonBytes, err := ioutil.ReadFile(jsonFile)
-	if err != nil {
-		panic(err)
+		jsonFile := fmt.Sprintf("../../examples/rolie/feed/%s.json", name)
+		jsonParsedRoot := &models.JSONFeedRoot{}
+		jsonBytes, err := ioutil.ReadFile(jsonFile)
+		assert.Nil(t, err)
+
+		assert.Nil(t, json.Unmarshal(jsonBytes, jsonParsedRoot))
+		jsonParsed := &jsonParsedRoot.Feed
+		jsonParsed.XMLName = xmlParsed.XMLName // Disregard that json parser did not populate XMLName
+		assert.Equal(t, xmlParsed, jsonParsed, "XML parser returns different data than json equivalent")
 	}
-	err = json.Unmarshal(jsonBytes, jsonParsedRoot)
-	if err != nil {
-		panic(err)
-	}
-	jsonParsed := &jsonParsedRoot.Feed
-	jsonParsed.XMLName = xmlParsed.XMLName // Disregard that json parser did not populate XMLName
-	assert.Equal(t, xmlParsed, jsonParsed, "XML parser returns different data than json equivalent")
 }
