@@ -1,7 +1,7 @@
 /*
 Copyright © 2020 Rolie and Golie Contributors. See LICENSE for license.
 */
-package api
+package models
 
 import "github.com/rolieup/golie/internal/xml"
 

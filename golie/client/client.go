@@ -16,7 +16,7 @@ import (
 	"time"
 
 	"github.com/rolieup/golie/internal/xml"
-	"github.com/rolieup/golie/pkg/api"
+	"github.com/rolieup/golie/pkg/models"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -70,7 +70,7 @@ func Client() {
 
 	switch {
 	case strings.Contains(servedContent, "atomsvc+xml"):
-		serviceD := &api.Service{}
+		serviceD := &models.Service{}
 		serviceD.Xmlns = "https://www.w3.org/2005/Atom"
 
 		err = xml.NewDecoder(r.Body).Decode(&serviceD)
@@ -95,7 +95,7 @@ func Client() {
 			fmt.Println()
 		}
 	case strings.Contains(servedContent, "json"):
-		serviceD := &api.JSONServiceRoot{}
+		serviceD := &models.JSONServiceRoot{}
 		err := json.NewDecoder(r.Body).Decode(&serviceD)
 		if err != nil {
 			fmt.Printf("Failed to decode the json service document: %s", err)
