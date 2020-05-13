@@ -12,10 +12,11 @@ import (
 )
 
 func TestCompareXMLandJSON(t *testing.T) {
-	feedFiles, err := filepath.Glob("../../examples/rolie/feed/*.xml")
+	feedFiles, err := filepath.Glob("../../examples/rolie/*/*.xml")
 	assert.Nil(t, err)
 	assert.NotEmpty(t, feedFiles)
 	for _, xmlFile := range feedFiles {
+		dir := filepath.Dir(xmlFile)
 		base := filepath.Base(xmlFile)
 		name := strings.TrimSuffix(base, filepath.Ext(base))
 
@@ -23,11 +24,14 @@ func TestCompareXMLandJSON(t *testing.T) {
 		xmlDoc, err := rolie_source.ReadDocumentFromFile(xmlFile)
 		assert.Nil(t, err)
 
-		jsonFile := fmt.Sprintf("../../examples/rolie/feed/%s.json", name)
+		jsonFile := fmt.Sprintf("%s/%s.json", dir, name)
 		jsonDoc, err := rolie_source.ReadDocumentFromFile(jsonFile)
 		assert.Nil(t, err)
 
-		jsonDoc.Feed.XMLName = xmlDoc.Feed.XMLName // Disregard that json parser did not populate XMLName
+		// Disregard that json parser did not populate XMLName
+		if jsonDoc.Feed != nil {
+			jsonDoc.Feed.XMLName = xmlDoc.Feed.XMLName
+		}
 		assert.Equal(t, xmlDoc, jsonDoc, "XML parser returns different data than json equivalent")
 	}
 }
