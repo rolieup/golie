@@ -98,8 +98,8 @@ func serverShutdown(srv *http.Server, idleConnsClosed chan struct{}) {
 }
 
 func service(w http.ResponseWriter, r *http.Request) {
-	fp := path.Join("../examples/rolie/service.json")
-	//fp := path.Join("../examples/rolie/service.xml")
+	fp := path.Join("../examples/rolie/service/nvd.json")
+	//fp := path.Join("../examples/rolie/service/nvd.xml")
 	log.Infof("Received %s request from %s for ROLIE Service document at %s", r.Method, r.RemoteAddr, fp)
 	acpt := r.Header["Accept"]
 	switch acpt[0] {
