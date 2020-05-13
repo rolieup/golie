@@ -31,6 +31,10 @@ func TestCompareXMLandJSON(t *testing.T) {
 		// Disregard that json parser did not populate XMLName
 		if jsonDoc.Feed != nil {
 			jsonDoc.Feed.XMLName = xmlDoc.Feed.XMLName
+		} else if jsonDoc.Service != nil {
+			jsonDoc.Service.XMLName = xmlDoc.Service.XMLName
+			jsonDoc.Service.Xmlns = xmlDoc.Service.Xmlns
+
 		}
 		assert.Equal(t, xmlDoc, jsonDoc, "XML parser returns different data than json equivalent")
 	}
