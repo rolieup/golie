@@ -8,10 +8,6 @@ import (
 	"time"
 )
 
-type JSONFeedRoot struct {
-	Feed Feed `xml:"xml:-" json:"feed"`
-}
-
 type Feed struct {
 	XMLName     xml.Name     `xml:"feed" json:"-"`
 	Lang        string       `xml:"xml:lang,attr" json:"-"`
