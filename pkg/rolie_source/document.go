@@ -13,14 +13,16 @@ import (
 )
 
 const (
-	feedRootElement = "feed"
-	// TODO Entry, Service, ...
+	feedRootElement  = "feed"
+	entryRootElement = "entry"
+	// TODO Service, ...
 )
 
 // Rolie Document. Either Feed, Entry or Service
 type Document struct {
 	XMLName xml.Name `json:"-"`
 	*models.Feed
+	*models.Entry
 }
 
 func ReadDocument(r io.Reader) (*Document, error) {
@@ -44,6 +46,12 @@ func ReadDocument(r io.Reader) (*Document, error) {
 					return nil, err
 				}
 				return &Document{Feed: &feed}, nil
+			case entryRootElement:
+				var entry models.AtomEntry
+				if err := d.DecodeElement(&entry, &startElement); err != nil {
+					return nil, err
+				}
+				return &Document{Entry: entry.Entry}, nil
 			}
 		}
 	}
@@ -58,6 +66,12 @@ func ReadDocument(r io.Reader) (*Document, error) {
 					return nil, err
 				}
 				return &Document{Feed: &feed}, nil
+			case entryRootElement:
+				var entry models.AtomEntry
+				if err := json.Unmarshal(v, &entry); err != nil {
+					return nil, err
+				}
+				return &Document{Entry: entry.Entry}, nil
 			}
 		}
 	}
