@@ -20,7 +20,7 @@ func TestCompareXMLandJSON(t *testing.T) {
 		base := filepath.Base(xmlFile)
 		name := strings.TrimSuffix(base, filepath.Ext(base))
 
-		fmt.Printf("Testing parsing of %s... ", name)
+		fmt.Printf("Testing parsing of %s/%s\n", dir, name)
 		xmlDoc, err := rolie_source.ReadDocumentFromFile(xmlFile)
 		assert.Nil(t, err)
 
@@ -31,6 +31,11 @@ func TestCompareXMLandJSON(t *testing.T) {
 		// Disregard that json parser did not populate XMLName
 		if jsonDoc.Feed != nil {
 			jsonDoc.Feed.XMLName = xmlDoc.Feed.XMLName
+			for idx, entry := range xmlDoc.Feed.Entry {
+				jsonDoc.Feed.Entry[idx].XMLName = entry.XMLName
+			}
+		} else if jsonDoc.Entry != nil {
+			jsonDoc.Entry.XMLName = xmlDoc.Entry.XMLName
 		} else if jsonDoc.Service != nil {
 			jsonDoc.Service.XMLName = xmlDoc.Service.XMLName
 			jsonDoc.Service.Xmlns = xmlDoc.Service.Xmlns

@@ -3,11 +3,7 @@ Copyright © 2020 Rolie and Golie Contributors. See LICENSE for license.
 */
 package models
 
-import "github.com/rolieup/golie/internal/xml"
-
-type JSONServiceRoot struct {
-	Service Service `xml:"-" json:"service,"`
-}
+import "encoding/xml"
 
 type Service struct {
 	XMLName    xml.Name    `xml:"service" json:"-"`
@@ -24,19 +20,11 @@ type Workspace struct {
 type Collection struct {
 	Href       string      `xml:"href,attr" json:"href"`
 	Title      string      `xml:"title,omitempty" json:"title"`
-	Link       *AtomLink   `xml:"link" json:"link"`
+	Link       *Link       `xml:"link" json:"link"`
 	Categories *Categories `xml:"categories,omitempty" json:"categories"`
 }
 
-type AtomLink struct {
-	Link
-}
-
 type Categories struct {
-	Fixed    string         `xml:"fixed,attr,omitempty" json:"fixed,omitempty"`
-	Category []AtomCategory `xml:"category,omitempty" json:"category"`
-}
-
-type AtomCategory struct {
-	Category
+	Fixed    string     `xml:"fixed,attr,omitempty" json:"fixed,omitempty"`
+	Category []Category `xml:"category,omitempty" json:"category"`
 }

@@ -1,0 +1,50 @@
+{
+  "service": {
+    "workspace": [
+      {
+        "title": "Public Security Information Sharing",
+        "collection": [
+          {
+            "href": "https://example.org/provider/public/vulns",
+            "title": "Public Vulnerabilities",
+            "link": {
+              "rel": "service",
+              "href": "https://example.org/rolie/servicedocument"
+            },
+            "categories": {
+              "fixed": "yes",
+              "category": [
+                {
+                  "scheme": "urn:ietf:params:rolie:category:information-type",
+                  "term": "vulnerability"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "title": "Private Consortium Sharing",
+        "collection": [
+          {
+            "href": "https://example.org/provider/private/incidents",
+            "title": "Incidents",
+            "link": {
+              "rel": "service",
+              "href": "https://example.org/rolie/servicedocument"
+            },
+            "categories": {
+              "fixed": "yes",
+              "category": [
+                {
+                  "scheme": "urn:ietf:params:rolie:category:information-type",
+                  "term": "incident"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

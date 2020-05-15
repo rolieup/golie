@@ -1,0 +1,19 @@
+{
+  "entry": {
+    "id": "f63aafa9-4082-48a3-9ce6-97a2d69d4a9b",
+    "title": "Sample Vulnerability",
+    "published": "2015-08-04T18:13:51.0Z",
+    "updated": "2015-08-05T18:13:51.0Z",
+    "summary": {
+      "content": "A vulnerability issue identified by CVE-..."
+    },
+    "content": {
+      "type": "application/xml",
+      "src": "https://example.org/provider/vulns/123456/data",
+      "content": "\n  "
+    },
+    "format": {
+      "schema": "urn:ietf:params:xml:ns:exampleformat"
+    }
+  }
+}

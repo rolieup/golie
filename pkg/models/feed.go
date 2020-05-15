@@ -37,6 +37,7 @@ type Generator struct {
 }
 
 type Entry struct {
+	XMLName   xml.Name  `xml:"entry" json:"-"`
 	ID        string    `xml:"id" json:"id"`
 	Title     string    `xml:"title" json:"title"`
 	Link      []Link    `xml:"link" json:"link"`
