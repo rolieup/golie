@@ -20,7 +20,7 @@ func TestCompareXMLandJSON(t *testing.T) {
 		base := filepath.Base(xmlFile)
 		name := strings.TrimSuffix(base, filepath.Ext(base))
 
-		fmt.Printf("Testing parsing of %s... ", name)
+		fmt.Printf("Testing parsing of %s/%s\n", dir, name)
 		xmlDoc, err := rolie_source.ReadDocumentFromFile(xmlFile)
 		assert.Nil(t, err)
 
