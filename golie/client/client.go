@@ -7,16 +7,12 @@ package golie
 import (
 	"crypto/tls"
 	"crypto/x509"
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"os"
-	"strings"
 	"time"
 
-	"github.com/rolieup/golie/internal/xml"
-	"github.com/rolieup/golie/pkg/models"
+	"github.com/rolieup/golie/pkg/rolie_source"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -65,69 +61,26 @@ func Client() {
 		fmt.Println("Response status:", r.Status)
 	}
 
-	servedContent := r.Header.Get("Content-Type")
-	fmt.Println(servedContent)
-
-	switch {
-	case strings.Contains(servedContent, "atomsvc+xml"):
-		serviceD := &models.Service{}
-		serviceD.Xmlns = "https://www.w3.org/2005/Atom"
-
-		err = xml.NewDecoder(r.Body).Decode(&serviceD)
-		if err != nil {
-			fmt.Printf("Failed to decode the xml service document: %s", err)
-		}
-
-		for i, w := range serviceD.Workspaces {
-			i = i + 1
-			fmt.Println("Document Type: Workspace")
-			fmt.Printf("Title: %s\n", w.Title)
-			fmt.Println("Collections:")
-			for _, c := range w.Collections {
-				fmt.Printf("\tTitle: %s\n", c.Title)
-				fmt.Printf("\t\tDocument URL: %s\n", c.Href)
-				fmt.Printf("\t\tCategory Type: %s\n", c.Categories.Category[0].Term)
-				fmt.Printf("\t\tCategory Scheme: %s\n", c.Categories.Category[0].Scheme)
-				fmt.Printf("\t\tService Information:\n")
-				fmt.Printf("\t\t  Type: %s\n", c.Link.Rel)
-				fmt.Printf("\t\t   URL: %s\n", c.Link.Href)
-			}
-			fmt.Println()
-		}
-	case strings.Contains(servedContent, "json"):
-		serviceD := &models.JSONServiceRoot{}
-		err := json.NewDecoder(r.Body).Decode(&serviceD)
-		if err != nil {
-			fmt.Printf("Failed to decode the json service document: %s", err)
-		}
-
-		for i, w := range serviceD.Service.Workspaces {
-			i = i + 1
-			fmt.Println("Document Type: Workspace")
-			fmt.Printf("Title: %s\n", w.Title)
-			fmt.Println("Collections:")
-			for _, c := range w.Collections {
-				fmt.Printf("\tTitle: %s\n", c.Title)
-				fmt.Printf("\t\tDocument URL: %s\n", c.Href)
-				fmt.Printf("\t\tCategory Type: %s\n", c.Categories.Category[0].Term)
-				fmt.Printf("\t\tCategory Scheme: %s\n", c.Categories.Category[0].Scheme)
-				fmt.Printf("\t\tService Information:\n")
-				fmt.Printf("\t\t  Type: %s\n", c.Link.Rel)
-				fmt.Printf("\t\t   URL: %s\n", c.Link.Href)
-			}
-			fmt.Println()
-		}
-	case strings.Contains(servedContent, "atom+xml"):
-		buf, _ := ioutil.ReadAll(r.Body)
-
-		data, err := xml.MarshalIndent(buf, "", "  ")
-		if err != nil {
-			fmt.Printf("Failed to marshal the feed: %s", err)
-			os.Exit(1)
-		}
-		fmt.Println(string(data))
+	document, err := rolie_source.ReadDocument(r.Body)
+	if err != nil {
+		fmt.Printf("Failed to decode the xml service document: %s", err)
 	}
-	//buf, _ := ioutil.ReadAll(r.Body)
-	//fmt.Println(string(buf))
+	serviceD := document.Service
 
+	for i, w := range serviceD.Workspaces {
+		i = i + 1
+		fmt.Println("Document Type: Workspace")
+		fmt.Printf("Title: %s\n", w.Title)
+		fmt.Println("Collections:")
+		for _, c := range w.Collections {
+			fmt.Printf("\tTitle: %s\n", c.Title)
+			fmt.Printf("\t\tDocument URL: %s\n", c.Href)
+			fmt.Printf("\t\tCategory Type: %s\n", c.Categories.Category[0].Term)
+			fmt.Printf("\t\tCategory Scheme: %s\n", c.Categories.Category[0].Scheme)
+			fmt.Printf("\t\tService Information:\n")
+			fmt.Printf("\t\t  Type: %s\n", c.Link.Rel)
+			fmt.Printf("\t\t   URL: %s\n", c.Link.Href)
+		}
+		fmt.Println()
+	}
 }
