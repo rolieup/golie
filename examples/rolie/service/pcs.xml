@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding='utf-8'?>
+<service xmlns="https://www.w3.org/2007/app"
+    xmlns:atom="https://www.w3.org/2005/Atom">
+  <workspace>
+    <atom:title>Public Security Information Sharing</atom:title>
+    <collection
+        href="https://example.org/provider/public/vulns">
+      <atom:title>Public Vulnerabilities</atom:title>
+      <atom:link rel="service"
+        href="https://example.org/rolie/servicedocument"/>
+      <categories fixed="yes">
+        <atom:category
+            scheme="urn:ietf:params:rolie:category:information-type"
+            term="vulnerability"/>
+      </categories>
+    </collection>
+  </workspace>
+  <workspace>
+    <atom:title>Private Consortium Sharing</atom:title>
+    <collection
+        href="https://example.org/provider/private/incidents">
+      <atom:title>Incidents</atom:title>
+      <atom:link rel="service"
+        href="https://example.org/rolie/servicedocument"/>
+      <categories fixed="yes">
+        <atom:category
+            scheme="urn:ietf:params:rolie:category:information-type"
+            term="incident"/>
+      </categories>
+    </collection>
+  </workspace>
+</service>
