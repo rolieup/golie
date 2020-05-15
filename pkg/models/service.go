@@ -29,10 +29,6 @@ type AtomLink struct {
 }
 
 type Categories struct {
-	Fixed    string         `xml:"fixed,attr,omitempty" json:"fixed,omitempty"`
-	Category []AtomCategory `xml:"category,omitempty" json:"category"`
-}
-
-type AtomCategory struct {
-	Category
+	Fixed    string     `xml:"fixed,attr,omitempty" json:"fixed,omitempty"`
+	Category []Category `xml:"category,omitempty" json:"category"`
 }

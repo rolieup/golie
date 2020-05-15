@@ -27,8 +27,8 @@ func TestRFCServiceParsing(t *testing.T) {
 	assert.Equal(t, cols[0].Categories.Fixed, "yes")
 	categories := cols[0].Categories.Category
 	assert.Equal(t, len(categories), 1)
-	assert.Equal(t, categories[0].Category.Scheme, "urn:ietf:params:rolie:category:information-type")
-	assert.Equal(t, categories[0].Category.Term, "vulnerability")
+	assert.Equal(t, categories[0].Scheme, "urn:ietf:params:rolie:category:information-type")
+	assert.Equal(t, categories[0].Term, "vulnerability")
 
 	assert.Equal(t, workspaces[1].Title, "Private Consortium Sharing")
 	cols = workspaces[1].Collections
@@ -45,6 +45,6 @@ func TestRFCServiceParsing(t *testing.T) {
 	assert.Equal(t, cols[0].Categories.Fixed, "yes")
 	categories = cols[0].Categories.Category
 	assert.Equal(t, len(categories), 1)
-	assert.Equal(t, categories[0].Category.Scheme, "urn:ietf:params:rolie:category:information-type")
-	assert.Equal(t, categories[0].Category.Term, "incident")
+	assert.Equal(t, categories[0].Scheme, "urn:ietf:params:rolie:category:information-type")
+	assert.Equal(t, categories[0].Term, "incident")
 }
