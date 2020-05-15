@@ -5,10 +5,6 @@ package models
 
 import "encoding/xml"
 
-type JSONServiceRoot struct {
-	Service Service `xml:"-" json:"service,"`
-}
-
 type Service struct {
 	XMLName    xml.Name    `xml:"service" json:"-"`
 	Xmlns      string      `xml:"xmlns atom,attr" json:"-"`
