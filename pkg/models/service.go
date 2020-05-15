@@ -3,7 +3,7 @@ Copyright © 2020 Rolie and Golie Contributors. See LICENSE for license.
 */
 package models
 
-import "github.com/rolieup/golie/internal/xml"
+import "encoding/xml"
 
 type JSONServiceRoot struct {
 	Service Service `xml:"-" json:"service,"`
