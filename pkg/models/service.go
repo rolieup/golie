@@ -20,12 +20,8 @@ type Workspace struct {
 type Collection struct {
 	Href       string      `xml:"href,attr" json:"href"`
 	Title      string      `xml:"title,omitempty" json:"title"`
-	Link       *AtomLink   `xml:"link" json:"link"`
+	Link       *Link       `xml:"link" json:"link"`
 	Categories *Categories `xml:"categories,omitempty" json:"categories"`
-}
-
-type AtomLink struct {
-	Link
 }
 
 type Categories struct {
