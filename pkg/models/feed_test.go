@@ -31,6 +31,11 @@ func TestCompareXMLandJSON(t *testing.T) {
 		// Disregard that json parser did not populate XMLName
 		if jsonDoc.Feed != nil {
 			jsonDoc.Feed.XMLName = xmlDoc.Feed.XMLName
+			for idx, entry := range xmlDoc.Feed.Entry {
+				jsonDoc.Feed.Entry[idx].XMLName = entry.XMLName
+			}
+		} else if jsonDoc.Entry != nil {
+			jsonDoc.Entry.XMLName = xmlDoc.Entry.XMLName
 		} else if jsonDoc.Service != nil {
 			jsonDoc.Service.XMLName = xmlDoc.Service.XMLName
 			jsonDoc.Service.Xmlns = xmlDoc.Service.Xmlns

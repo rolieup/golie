@@ -53,11 +53,11 @@ func ReadDocument(r io.Reader) (*Document, error) {
 				}
 				return &Document{Feed: &feed}, assertAtomNamespace(feed.XMLName.Space)
 			case entryRootElement:
-				var entry models.AtomEntry
+				var entry models.Entry
 				if err := d.DecodeElement(&entry, &startElement); err != nil {
 					return nil, err
 				}
-				return &Document{Entry: entry.Entry}, assertAtomNamespace(entry.XMLName.Space)
+				return &Document{Entry: &entry}, assertAtomNamespace(entry.XMLName.Space)
 			case serviceRootElement:
 				var service models.Service
 				if err := d.DecodeElement(&service, &startElement); err != nil {
@@ -79,11 +79,11 @@ func ReadDocument(r io.Reader) (*Document, error) {
 				}
 				return &Document{Feed: &feed}, nil
 			case entryRootElement:
-				var entry models.AtomEntry
+				var entry models.Entry
 				if err := json.Unmarshal(v, &entry); err != nil {
 					return nil, err
 				}
-				return &Document{Entry: entry.Entry}, nil
+				return &Document{Entry: &entry}, nil
 			case serviceRootElement:
 				var service models.Service
 				if err := json.Unmarshal(v, &service); err != nil {
