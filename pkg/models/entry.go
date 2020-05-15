@@ -12,7 +12,7 @@ type JSONEntryRoot struct {
 }
 
 type AtomEntry struct {
-	XMLName xml.Name `xml:"http://www.w3.org/2005/Atom entry" json:"-"`
+	XMLName xml.Name `xml:"entry" json:"-"`
 	Lang    string   `xml:"xml:lang,attr" json:"-"`
 	Roliens string   `xml:"xmlns:rolie,attr" json:"-"`
 	Entry   *Entry   `xml:"entry" json:"entry"`
