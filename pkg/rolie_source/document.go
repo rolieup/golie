@@ -25,10 +25,10 @@ const (
 
 // Rolie Document. Either Feed, Entry or Service
 type Document struct {
-	XMLName xml.Name `json:"-"`
-	*models.Feed
-	*models.Entry
-	*models.Service
+	XMLName         xml.Name `json:"-"`
+	*models.Feed    `json:"feed,omitempty"`
+	*models.Entry   `json:"entry,omitempty"`
+	*models.Service `json:"service,omitempty"`
 }
 
 func ReadDocument(r io.Reader) (*Document, error) {
@@ -125,4 +125,44 @@ func assertAtomPublishingNamespace(namespace string) error {
 	default:
 		return fmt.Errorf("Unknown xml namespace '%s' expected %s", namespace, atomPublishingHttpsUri)
 	}
+}
+
+// XML writes the Rolie object as XML to the given writer
+func (doc *Document) XML(w io.Writer, prettify bool) error {
+	e := xml.NewEncoder(w)
+	if prettify {
+		e.Indent("", "  ")
+	}
+	return e.Encode(doc)
+}
+
+// JSON writes the Rolie object as JSON to the given writer
+func (doc *Document) JSON(w io.Writer, prettify bool) error {
+	e := json.NewEncoder(w)
+	if prettify {
+		e.SetIndent("", "  ")
+	}
+
+	return e.Encode(doc)
+}
+
+// MarshalXML marshals either a catalog or a profile
+func (doc *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if doc.Feed != nil {
+		doc.XMLName = doc.Feed.XMLName
+		if err := e.Encode(doc.Feed); err != nil {
+			return err
+		}
+	} else if doc.Entry != nil {
+		doc.XMLName = doc.Entry.XMLName
+		if err := e.Encode(doc.Entry); err != nil {
+			return err
+		}
+	} else if doc.Service != nil {
+		doc.XMLName = doc.Service.XMLName
+		if err := e.Encode(doc.Service); err != nil {
+			return err
+		}
+	}
+	return errors.New("Cannot marshal empty rolie document")
 }
