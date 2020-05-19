@@ -129,6 +129,7 @@ func assertAtomPublishingNamespace(namespace string) error {
 
 // XML writes the Rolie object as XML to the given writer
 func (doc *Document) XML(w io.Writer, prettify bool) error {
+	w.Write([]byte(xml.Header))
 	e := xml.NewEncoder(w)
 	if prettify {
 		e.Indent("", "  ")
