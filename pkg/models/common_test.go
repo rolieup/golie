@@ -12,7 +12,7 @@ import (
 )
 
 func TestImportXMLandExportJSON(t *testing.T) {
-	xmlFiles, err := filepath.Glob("../../examples/rolie/entry/f*.xml")
+	xmlFiles, err := filepath.Glob("../../examples/rolie/*/*.xml")
 	assert.Nil(t, err)
 	assert.NotEmpty(t, xmlFiles)
 	for _, xmlFile := range xmlFiles {
