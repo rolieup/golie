@@ -2,6 +2,7 @@ package models_test
 
 import (
 	"fmt"
+	"io/ioutil"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -10,11 +11,35 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCompareXMLandJSON(t *testing.T) {
-	feedFiles, err := filepath.Glob("../../examples/rolie/*/*.xml")
+func TestImportXMLandExportJSON(t *testing.T) {
+	xmlFiles, err := filepath.Glob("../../examples/rolie/entry/f*.xml")
 	assert.Nil(t, err)
-	assert.NotEmpty(t, feedFiles)
-	for _, xmlFile := range feedFiles {
+	assert.NotEmpty(t, xmlFiles)
+	for _, xmlFile := range xmlFiles {
+		dir := filepath.Dir(xmlFile)
+		base := filepath.Base(xmlFile)
+		name := strings.TrimSuffix(base, filepath.Ext(base))
+		xmlDoc, err := rolie_source.ReadDocumentFromFile(xmlFile)
+		assert.Nil(t, err)
+
+		fmt.Printf("Testing parsing and exporting of %s/%s\n", dir, name)
+		var testJson strings.Builder
+		err = xmlDoc.JSON(&testJson, true)
+		assert.Nil(t, err)
+
+		jsonFile := fmt.Sprintf("%s/%s.json", dir, name)
+		jsonDoc, err := ioutil.ReadFile(jsonFile)
+		assert.Nil(t, err)
+
+		assert.Equal(t, testJson.String(), string(jsonDoc))
+	}
+}
+
+func TestCompareXMLandJSON(t *testing.T) {
+	xmlFiles, err := filepath.Glob("../../examples/rolie/*/*.xml")
+	assert.Nil(t, err)
+	assert.NotEmpty(t, xmlFiles)
+	for _, xmlFile := range xmlFiles {
 		dir := filepath.Dir(xmlFile)
 		base := filepath.Base(xmlFile)
 		name := strings.TrimSuffix(base, filepath.Ext(base))

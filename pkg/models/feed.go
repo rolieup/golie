@@ -40,7 +40,7 @@ type Entry struct {
 	XMLName   xml.Name  `xml:"entry" json:"-"`
 	ID        string    `xml:"id" json:"id"`
 	Title     string    `xml:"title" json:"title"`
-	Link      []Link    `xml:"link" json:"link"`
+	Link      []Link    `xml:"link" json:"link,omitempty"`
 	Published TimeStr   `xml:"published" json:"published"`
 	Updated   TimeStr   `xml:"updated" json:"updated"`
 	Author    *Person   `xml:"author,omitempty" json:"author,omitempty"`
