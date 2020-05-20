@@ -150,20 +150,28 @@ func (doc *Document) JSON(w io.Writer, prettify bool) error {
 // MarshalXML marshals either a catalog or a profile
 func (doc *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if doc.Feed != nil {
-		doc.XMLName = doc.Feed.XMLName
+		doc.Feed.Xmlns = atom2005HttpsUri
 		if err := e.Encode(doc.Feed); err != nil {
 			return err
 		}
 	} else if doc.Entry != nil {
-		doc.XMLName = doc.Entry.XMLName
+		doc.Entry.Xmlns = atom2005HttpsUri
 		if err := e.Encode(doc.Entry); err != nil {
 			return err
 		}
 	} else if doc.Service != nil {
-		doc.XMLName = doc.Service.XMLName
+		doc.Entry.Xmlns = atomPublishingHttpsUri
 		if err := e.Encode(doc.Service); err != nil {
 			return err
 		}
 	}
 	return errors.New("Cannot marshal empty rolie document")
+}
+
+func ensureXmlns(n *xml.Name, space, local string) {
+	if n.Space == "" {
+		n.Space = space
+		n.Local = local
+	}
+	fmt.Println(n.Space)
 }

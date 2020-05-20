@@ -10,6 +10,7 @@ import (
 
 type Feed struct {
 	XMLName     xml.Name     `xml:"feed" json:"-"`
+	Xmlns       string       `xml:"xmlns,attr" json:"-"`
 	Lang        string       `xml:"xml:lang,attr" json:"-"`
 	Roliens     string       `xml:"xmlns:rolie,attr" json:"-"`
 	ID          string       `xml:"id" json:"id"`
@@ -38,6 +39,7 @@ type Generator struct {
 
 type Entry struct {
 	XMLName   xml.Name  `xml:"entry" json:"-"`
+	Xmlns     string    `xml:"xmlns,attr" json:"-"`
 	ID        string    `xml:"id" json:"id"`
 	Title     string    `xml:"title" json:"title"`
 	Link      []Link    `xml:"link" json:"link,omitempty"`
