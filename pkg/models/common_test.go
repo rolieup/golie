@@ -31,7 +31,7 @@ func TestImportXMLandExportJSON(t *testing.T) {
 		jsonDoc, err := ioutil.ReadFile(jsonFile)
 		assert.Nil(t, err)
 
-		assert.Equal(t, testJson.String(), string(jsonDoc))
+		assert.Equal(t, testJson.String(), msWindowsPleaseDitchCarriageReturn(jsonDoc))
 	}
 }
 
@@ -69,4 +69,8 @@ func TestCompareXMLandJSON(t *testing.T) {
 		}
 		assert.Equal(t, xmlDoc, jsonDoc, "XML parser returns different data than json equivalent")
 	}
+}
+
+func msWindowsPleaseDitchCarriageReturn(in []byte) string {
+	return strings.ReplaceAll(string(in), "\r", "")
 }
