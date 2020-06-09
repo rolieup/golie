@@ -58,7 +58,7 @@ type Link struct {
 	Type     string `xml:"type,attr,omitempty" json:"type,omitempty"`
 	HrefLang string `xml:"hreflang,attr,omitempty" json:"-"`
 	Title    string `xml:"title,attr,omitempty" json:"title,omitempty"`
-	Length   uint   `xml:"length,attr,omitempty" json:"length,omitempty"`
+	Length   uint64 `xml:"length,attr,omitempty" json:"length,omitempty"`
 	Body     string `xml:",chardata" json:"-"`
 }
 

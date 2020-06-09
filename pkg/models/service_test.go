@@ -22,7 +22,7 @@ func TestRFCServiceParsing(t *testing.T) {
 	assert.Equal(t, cols[0].Link.Type, "")
 	assert.Equal(t, cols[0].Link.HrefLang, "")
 	assert.Equal(t, cols[0].Link.Title, "")
-	assert.Equal(t, cols[0].Link.Length, uint(0))
+	assert.Equal(t, cols[0].Link.Length, uint64(0))
 	assert.Equal(t, cols[0].Link.Body, "")
 	assert.Equal(t, cols[0].Categories.Fixed, "yes")
 	categories := cols[0].Categories.Category
@@ -40,7 +40,7 @@ func TestRFCServiceParsing(t *testing.T) {
 	assert.Equal(t, cols[0].Link.Type, "")
 	assert.Equal(t, cols[0].Link.HrefLang, "")
 	assert.Equal(t, cols[0].Link.Title, "")
-	assert.Equal(t, cols[0].Link.Length, uint(0))
+	assert.Equal(t, cols[0].Link.Length, uint64(0))
 	assert.Equal(t, cols[0].Link.Body, "")
 	assert.Equal(t, cols[0].Categories.Fixed, "yes")
 	categories = cols[0].Categories.Category
