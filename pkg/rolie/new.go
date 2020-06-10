@@ -46,6 +46,7 @@ type scapFile struct {
 }
 
 func (scap *scapFile) RolieEntry() (*models.Entry, error) {
+	baseUri := "https://www.todo.acme.org/"
 	var entry models.Entry
 	var err error
 
@@ -56,12 +57,16 @@ func (scap *scapFile) RolieEntry() (*models.Entry, error) {
 	}
 	entry.Link = []models.Link{
 		models.Link{
-			Href:   scap.Link("https://www.todo.acme.org/"),
+			Href:   scap.Link(baseUri),
 			Length: uint64(scap.Size),
 		},
 	}
 	entry.Updated = models.Time(scap.ModifiedTime)
 	entry.Published = models.Time(time.Now())
+	entry.Content = &models.Text{
+		Type: "applicaiton/xml",
+		Src:  scap.Link(baseUri),
+	}
 
 	return &entry, nil
 }
