@@ -56,7 +56,7 @@ func (scap *scapFile) RolieEntry() (*models.Entry, error) {
 	}
 	entry.Link = []models.Link{
 		models.Link{
-			Href:   "www.todo.acme.org/" + scap.Path,
+			Href:   scap.Link("https://www.todo.acme.org/"),
 			Length: uint64(scap.Size),
 		},
 	}
@@ -64,6 +64,12 @@ func (scap *scapFile) RolieEntry() (*models.Entry, error) {
 	entry.Published = models.Time(time.Now())
 
 	return &entry, nil
+}
+
+func (scap *scapFile) Link(baseUri string) string {
+	baseUri = strings.TrimSuffix(baseUri, "/")
+	path := strings.TrimPrefix(scap.Path, "/")
+	return baseUri + "/" + path
 }
 
 func (scap *scapFile) Title() (string, error) {
