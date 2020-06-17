@@ -13,29 +13,45 @@ import (
 	"github.com/rolieup/golie/pkg/rolie_source"
 )
 
-func New(directoryPath string) error {
-	scapFiles, err := traverseScapFiles(directoryPath)
+type Builder struct {
+	ID            string
+	Title         string
+	RootURI       string
+	DirectoryPath string
+}
+
+func (b *Builder) New() error {
+	feed, err := b.feedForDirectory()
+	doc := rolie_source.Document{
+		Feed: feed,
+	}
+	var testJson strings.Builder
+	err = doc.JSON(&testJson, true)
 	if err != nil {
 		return err
 	}
-	for f := range scapFiles {
-		fmt.Println("Processing SCAP file: ", f.Path)
-		entry, err := f.RolieEntry()
-		if err != nil {
-			return err
-		}
-		doc := rolie_source.Document{
-			Entry: entry,
-		}
-		var testJson strings.Builder
-		err = doc.JSON(&testJson, true)
-		if err != nil {
-			return err
-		}
-		fmt.Printf("\n-------------------\n%s\n", testJson.String())
-	}
-
+	fmt.Printf("\n%s\n", testJson.String())
 	return nil
+}
+
+func (b *Builder) feedForDirectory() (*models.Feed, error) {
+	scapFiles, err := traverseScapFiles(b.DirectoryPath)
+	if err != nil {
+		return nil, err
+	}
+	feed := models.Feed{
+		ID:      b.ID,
+		Title:   b.Title,
+		Updated: models.Time(time.Now()),
+	}
+	for f := range scapFiles {
+		entry, err := f.RolieEntry(b.RootURI)
+		if err != nil {
+			return nil, err
+		}
+		feed.Entry = append(feed.Entry, entry)
+	}
+	return &feed, nil
 }
 
 type scapFile struct {
@@ -45,7 +61,7 @@ type scapFile struct {
 	ModifiedTime time.Time
 }
 
-func (scap *scapFile) RolieEntry() (*models.Entry, error) {
+func (scap *scapFile) RolieEntry(baseUri string) (*models.Entry, error) {
 	var entry models.Entry
 	var err error
 
@@ -56,14 +72,27 @@ func (scap *scapFile) RolieEntry() (*models.Entry, error) {
 	}
 	entry.Link = []models.Link{
 		models.Link{
-			Href:   "www.todo.acme.org/" + scap.Path,
+			Href:   scap.Link(baseUri),
 			Length: uint64(scap.Size),
 		},
 	}
 	entry.Updated = models.Time(scap.ModifiedTime)
 	entry.Published = models.Time(time.Now())
-
+	entry.Content = &models.Text{
+		Type: "applicaiton/xml",
+		Src:  scap.Link(baseUri),
+	}
+	entry.Format = &models.Format{
+		Ns:      scap.Document.Xmlns(),
+		Version: scap.Document.ScapVersion(),
+	}
 	return &entry, nil
+}
+
+func (scap *scapFile) Link(baseUri string) string {
+	baseUri = strings.TrimSuffix(baseUri, "/")
+	path := strings.TrimPrefix(scap.Path, "/")
+	return baseUri + "/" + path
 }
 
 func (scap *scapFile) Title() (string, error) {

@@ -28,6 +28,31 @@ var Cmd = &cobra.Command{
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return rolie.New(args[0])
+		rootUri, err := cmd.Flags().GetString("root-uri")
+		if err != nil {
+			return err
+		}
+		id, err := cmd.Flags().GetString("id")
+		if err != nil {
+			return err
+		}
+		title, err := cmd.Flags().GetString("title")
+		if err != nil {
+			return err
+		}
+
+		builder := rolie.Builder{
+			ID:            id,
+			Title:         title,
+			RootURI:       rootUri,
+			DirectoryPath: args[0],
+		}
+		return builder.New()
 	},
+}
+
+func init() {
+	Cmd.Flags().String("root-uri", "", "URI to the feed itself. Example 'https://acme.org/my_rolie_content/")
+	Cmd.Flags().String("id", "", "ID for the rolie feed")
+	Cmd.Flags().String("title", "", "Title for the rolie feed")
 }
