@@ -14,27 +14,28 @@ import (
 )
 
 func New(directoryPath string) error {
+	feed := models.Feed{}
 	scapFiles, err := traverseScapFiles(directoryPath)
 	if err != nil {
 		return err
 	}
 	for f := range scapFiles {
-		fmt.Println("Processing SCAP file: ", f.Path)
 		entry, err := f.RolieEntry()
 		if err != nil {
 			return err
 		}
-		doc := rolie_source.Document{
-			Entry: entry,
-		}
-		var testJson strings.Builder
-		err = doc.JSON(&testJson, true)
-		if err != nil {
-			return err
-		}
-		fmt.Printf("\n-------------------\n%s\n", testJson.String())
+		feed.Entry = append(feed.Entry, entry)
 	}
 
+	doc := rolie_source.Document{
+		Feed: &feed,
+	}
+	var testJson strings.Builder
+	err = doc.JSON(&testJson, true)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("\n%s\n", testJson.String())
 	return nil
 }
 
