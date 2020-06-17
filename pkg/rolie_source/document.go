@@ -194,8 +194,10 @@ func (doc *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		if err := e.Encode(doc.Service); err != nil {
 			return err
 		}
+	} else {
+		return errors.New("Cannot marshal empty rolie document")
 	}
-	return errors.New("Cannot marshal empty rolie document")
+	return nil
 }
 
 func ensureXmlns(n *xml.Name, space, local string) {
