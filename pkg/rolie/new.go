@@ -14,21 +14,9 @@ import (
 )
 
 func New(directoryPath string) error {
-	feed := models.Feed{}
-	scapFiles, err := traverseScapFiles(directoryPath)
-	if err != nil {
-		return err
-	}
-	for f := range scapFiles {
-		entry, err := f.RolieEntry()
-		if err != nil {
-			return err
-		}
-		feed.Entry = append(feed.Entry, entry)
-	}
-
+	feed, err := buildFeedForDirectory(directoryPath)
 	doc := rolie_source.Document{
-		Feed: &feed,
+		Feed: feed,
 	}
 	var testJson strings.Builder
 	err = doc.JSON(&testJson, true)
@@ -37,6 +25,22 @@ func New(directoryPath string) error {
 	}
 	fmt.Printf("\n%s\n", testJson.String())
 	return nil
+}
+
+func buildFeedForDirectory(directoryPath string) (*models.Feed, error) {
+	scapFiles, err := traverseScapFiles(directoryPath)
+	if err != nil {
+		return nil, err
+	}
+	feed := models.Feed{}
+	for f := range scapFiles {
+		entry, err := f.RolieEntry()
+		if err != nil {
+			return nil, err
+		}
+		feed.Entry = append(feed.Entry, entry)
+	}
+	return &feed, nil
 }
 
 type scapFile struct {
