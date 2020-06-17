@@ -105,6 +105,36 @@ func ReadDocumentFromFile(path string) (*Document, error) {
 	return ReadDocument(reader)
 }
 
+// Writes both json and xml files. Provide path without extension.
+func (doc *Document) Write(filePath string) error {
+	err := doc.WriteJSON(filePath + ".json")
+	if err != nil {
+		return err
+	}
+
+	return doc.WriteXML(filePath + ".xml")
+}
+
+func (doc *Document) WriteJSON(filePath string) error {
+	file, err := os.Create(filePath)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	return doc.JSON(file, true)
+}
+
+func (doc *Document) WriteXML(filePath string) error {
+	file, err := os.Create(filePath)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	return doc.XML(file, true)
+}
+
 func assertAtomNamespace(namespace string) error {
 	switch namespace {
 	case atom2005HttpsUri:

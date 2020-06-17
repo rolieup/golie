@@ -22,16 +22,13 @@ type Builder struct {
 
 func (b *Builder) New() error {
 	feed, err := b.feedForDirectory()
-	doc := rolie_source.Document{
-		Feed: feed,
-	}
-	var testJson strings.Builder
-	err = doc.JSON(&testJson, true)
 	if err != nil {
 		return err
 	}
-	fmt.Printf("\n%s\n", testJson.String())
-	return nil
+	doc := rolie_source.Document{
+		Feed: feed,
+	}
+	return doc.Write(filepath.Join(b.DirectoryPath, "feed"))
 }
 
 func (b *Builder) feedForDirectory() (*models.Feed, error) {
