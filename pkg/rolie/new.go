@@ -67,7 +67,10 @@ func (scap *scapFile) RolieEntry() (*models.Entry, error) {
 		Type: "applicaiton/xml",
 		Src:  scap.Link(baseUri),
 	}
-
+	entry.Format = &models.Format{
+		Ns:      scap.Document.Xmlns(),
+		Version: scap.Document.ScapVersion(),
+	}
 	return &entry, nil
 }
 
