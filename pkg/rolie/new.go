@@ -14,6 +14,8 @@ import (
 )
 
 type Builder struct {
+	ID            string
+	Title         string
 	RootURI       string
 	DirectoryPath string
 }
@@ -37,7 +39,11 @@ func (b *Builder) feedForDirectory() (*models.Feed, error) {
 	if err != nil {
 		return nil, err
 	}
-	feed := models.Feed{}
+	feed := models.Feed{
+		ID:      b.ID,
+		Title:   b.Title,
+		Updated: models.Time(time.Now()),
+	}
 	for f := range scapFiles {
 		entry, err := f.RolieEntry(b.RootURI)
 		if err != nil {

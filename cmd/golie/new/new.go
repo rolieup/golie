@@ -32,7 +32,18 @@ var Cmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
+		id, err := cmd.Flags().GetString("id")
+		if err != nil {
+			return err
+		}
+		title, err := cmd.Flags().GetString("title")
+		if err != nil {
+			return err
+		}
+
 		builder := rolie.Builder{
+			ID:            id,
+			Title:         title,
 			RootURI:       rootUri,
 			DirectoryPath: args[0],
 		}
@@ -42,4 +53,6 @@ var Cmd = &cobra.Command{
 
 func init() {
 	Cmd.Flags().String("root-uri", "", "URI to the feed itself. Example 'https://acme.org/my_rolie_content/")
+	Cmd.Flags().String("id", "", "ID for the rolie feed")
+	Cmd.Flags().String("title", "", "Title for the rolie feed")
 }
