@@ -13,8 +13,13 @@ import (
 	"github.com/rolieup/golie/pkg/rolie_source"
 )
 
-func New(directoryPath string) error {
-	feed, err := buildFeedForDirectory(directoryPath)
+type Builder struct {
+	RootURI       string
+	DirectoryPath string
+}
+
+func (b *Builder) New() error {
+	feed, err := b.feedForDirectory()
 	doc := rolie_source.Document{
 		Feed: feed,
 	}
@@ -27,14 +32,14 @@ func New(directoryPath string) error {
 	return nil
 }
 
-func buildFeedForDirectory(directoryPath string) (*models.Feed, error) {
-	scapFiles, err := traverseScapFiles(directoryPath)
+func (b *Builder) feedForDirectory() (*models.Feed, error) {
+	scapFiles, err := traverseScapFiles(b.DirectoryPath)
 	if err != nil {
 		return nil, err
 	}
 	feed := models.Feed{}
 	for f := range scapFiles {
-		entry, err := f.RolieEntry()
+		entry, err := f.RolieEntry(b.RootURI)
 		if err != nil {
 			return nil, err
 		}
@@ -50,8 +55,7 @@ type scapFile struct {
 	ModifiedTime time.Time
 }
 
-func (scap *scapFile) RolieEntry() (*models.Entry, error) {
-	baseUri := "https://www.todo.acme.org/"
+func (scap *scapFile) RolieEntry(baseUri string) (*models.Entry, error) {
 	var entry models.Entry
 	var err error
 
