@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/rolieup/golie/pkg/models"
 	"github.com/rolieup/golie/pkg/rolie_source"
 )
 
@@ -17,12 +18,21 @@ func Clone(URI string, dir string) error {
 		URI:           URI,
 		DirectoryPath: dir,
 	}
+	f.Init()
 	return f.Clone()
 }
 
 type fetcher struct {
 	URI           string
+	BaseURI       string
 	DirectoryPath string
+}
+
+func (f *fetcher) Init() {
+	idx := strings.LastIndex(f.URI, "/")
+	if idx != -1 && idx != len(f.URI) {
+		f.BaseURI = f.URI[:idx]
+	}
 }
 
 func (f *fetcher) Clone() error {
@@ -48,11 +58,38 @@ func (f *fetcher) Clone() error {
 	if document.Feed == nil {
 		return fmt.Errorf("Not implemented yet: Found ROLIE resource that is not rolie:feed.")
 	}
-	// TODO process feed
+	return f.cloneFeed(document.Feed)
+}
+
+func (f *fetcher) cloneFeed(feed *models.Feed) error {
+	for _, entry := range feed.Entry {
+		if len(entry.Link) > 0 {
+			err := f.storeRemoteResource(entry.Link[0].Href)
+			if err != nil {
+				return err
+			}
+		}
+	}
 	return nil
 }
 
+func (f *fetcher) storeRemoteResource(URI string) error {
+	mainResource, err := f.getRemoteResourceRaw(URI)
+	if err != nil {
+		return err
+	}
+	defer mainResource.Close()
+
+	rawBytes, err := ioutil.ReadAll(mainResource)
+	if err != nil {
+		return err
+	}
+	return f.storeLocally(URI, rawBytes)
+}
+
 func (f *fetcher) getRemoteResourceRaw(URI string) (io.ReadCloser, error) {
+	fmt.Printf("Downloading %s\n", URI)
+
 	client := &http.Client{}
 	// Make a request
 	req, err := http.NewRequest("GET", URI, nil)
@@ -71,7 +108,7 @@ func (f *fetcher) getRemoteResourceRaw(URI string) (io.ReadCloser, error) {
 }
 
 func (f *fetcher) storeLocally(URI string, content []byte) error {
-	filepath, err := f.filepath(f.URI)
+	filepath, err := f.filepath(URI)
 	if err != nil {
 		return err
 	}
@@ -93,8 +130,8 @@ func (f *fetcher) filepathRelative(URI string) (string, error) {
 			return URI[idx:], nil
 		}
 	}
-	if strings.HasPrefix(URI, f.URI) {
-		return strings.TrimPrefix(URI, f.URI), nil
+	if strings.HasPrefix(URI, f.BaseURI) {
+		return strings.TrimPrefix(URI, f.BaseURI), nil
 	}
 	return "", fmt.Errorf("Not implemented yet")
 
