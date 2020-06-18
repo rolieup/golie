@@ -76,7 +76,7 @@ func (scap *scapFile) RolieEntry(baseUri string) (*models.Entry, error) {
 	entry.Updated = models.Time(scap.ModifiedTime)
 	entry.Published = models.Time(time.Now())
 	entry.Content = &models.Text{
-		Type: "applicaiton/xml",
+		Type: "applicatiton/xml",
 		Src:  scap.Link(baseUri),
 	}
 	entry.Format = &models.Format{
