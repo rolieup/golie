@@ -3,21 +3,26 @@ package rolie
 import (
 	"bytes"
 	"fmt"
-	"github.com/rolieup/golie/pkg/rolie_source"
 	"io"
 	"io/ioutil"
 	"net/http"
+	"path/filepath"
+	"strings"
+
+	"github.com/rolieup/golie/pkg/rolie_source"
 )
 
-func Clone(URI string) error {
+func Clone(URI string, dir string) error {
 	f := fetcher{
-		URI: URI,
+		URI:           URI,
+		DirectoryPath: dir,
 	}
 	return f.Clone()
 }
 
 type fetcher struct {
-	URI string
+	URI           string
+	DirectoryPath string
 }
 
 func (f *fetcher) Clone() error {
@@ -31,10 +36,12 @@ func (f *fetcher) Clone() error {
 	if err != nil {
 		return err
 	}
-	// TODO store to disk
-	mainResourceCopy := bytes.NewReader(rawBytes)
+	err = f.storeLocally(f.URI, rawBytes)
+	if err != nil {
+		return err
+	}
 
-	document, err := rolie_source.ReadDocument(mainResourceCopy)
+	document, err := rolie_source.ReadDocument(bytes.NewReader(rawBytes))
 	if err != nil {
 		return fmt.Errorf("Failed to parse rolie document %s", err)
 	}
@@ -61,4 +68,34 @@ func (f *fetcher) getRemoteResourceRaw(URI string) (io.ReadCloser, error) {
 		return nil, fmt.Errorf("Unexpected response %d from server on %s", response.StatusCode, URI)
 	}
 	return response.Body, nil
+}
+
+func (f *fetcher) storeLocally(URI string, content []byte) error {
+	filepath, err := f.filepath(f.URI)
+	if err != nil {
+		return err
+	}
+	return ioutil.WriteFile(filepath, content, 0777)
+}
+
+func (f *fetcher) filepath(URI string) (string, error) {
+	path, err := f.filepathRelative(URI)
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(f.DirectoryPath, path), nil
+}
+
+func (f *fetcher) filepathRelative(URI string) (string, error) {
+	if URI == f.URI {
+		idx := strings.LastIndex(URI, "/")
+		if idx != -1 && idx != len(URI) {
+			return URI[idx:], nil
+		}
+	}
+	if strings.HasPrefix(URI, f.URI) {
+		return strings.TrimPrefix(URI, f.URI), nil
+	}
+	return "", fmt.Errorf("Not implemented yet")
+
 }

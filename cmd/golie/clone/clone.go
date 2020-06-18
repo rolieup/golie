@@ -18,6 +18,14 @@ var Cmd = &cobra.Command{
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return rolie.Clone(args[0])
+		dir, err := cmd.Flags().GetString("dir")
+		if err != nil {
+			return err
+		}
+		return rolie.Clone(args[0], dir)
 	},
+}
+
+func init() {
+	Cmd.Flags().String("dir", "./", "Directory to clone the feed into.")
 }
