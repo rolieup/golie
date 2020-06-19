@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
 	"path/filepath"
 	"strings"
 
@@ -109,11 +110,17 @@ func (f *fetcher) getRemoteResourceRaw(URI string) (io.ReadCloser, error) {
 }
 
 func (f *fetcher) storeLocally(URI string, content []byte) error {
-	filepath, err := f.filepath(URI)
+	path, err := f.filepath(URI)
 	if err != nil {
 		return err
 	}
-	return ioutil.WriteFile(filepath, content, 0777)
+
+	dirPath := filepath.Dir(path)
+	err = os.MkdirAll(dirPath, os.FileMode(0722))
+	if err != nil {
+		return err
+	}
+	return ioutil.WriteFile(path, content, 0777)
 }
 
 func (f *fetcher) filepath(URI string) (string, error) {
