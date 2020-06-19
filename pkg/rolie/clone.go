@@ -116,11 +116,11 @@ func (f *fetcher) storeLocally(URI string, content []byte) error {
 	}
 
 	dirPath := filepath.Dir(path)
-	err = os.MkdirAll(dirPath, os.FileMode(0722))
+	err = os.MkdirAll(dirPath, os.FileMode(0755))
 	if err != nil {
 		return err
 	}
-	return ioutil.WriteFile(path, content, 0777)
+	return ioutil.WriteFile(path, content, 0644)
 }
 
 func (f *fetcher) filepath(URI string) (string, error) {
