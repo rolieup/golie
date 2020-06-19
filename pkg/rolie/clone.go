@@ -6,6 +6,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"path/filepath"
 	"strings"
 
@@ -133,6 +134,9 @@ func (f *fetcher) filepathRelative(URI string) (string, error) {
 	if strings.HasPrefix(URI, f.BaseURI) {
 		return strings.TrimPrefix(URI, f.BaseURI), nil
 	}
-	return "", fmt.Errorf("Not implemented yet")
-
+	location, err := url.Parse(URI)
+	if err != nil {
+		return "", fmt.Errorf("Could not parse URL: %v %s", err, URI)
+	}
+	return filepath.Join(location.Hostname(), location.EscapedPath()), nil
 }
