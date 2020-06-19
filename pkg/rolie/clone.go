@@ -64,12 +64,17 @@ func (f *fetcher) Clone() error {
 
 func (f *fetcher) cloneFeed(feed *models.Feed) error {
 	for _, entry := range feed.Entry {
-		if len(entry.Link) > 0 {
-			err := f.storeRemoteResource(entry.Link[0].Href)
-			if err != nil {
-				return err
-			}
+		err := f.cloneEntry(entry)
+		if err != nil {
+			return err
 		}
+	}
+	return nil
+}
+
+func (f *fetcher) cloneEntry(entry *models.Entry) error {
+	if len(entry.Link) > 0 {
+		return f.storeRemoteResource(entry.Link[0].Href)
 	}
 	return nil
 }
