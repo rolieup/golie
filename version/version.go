@@ -12,9 +12,12 @@ import (
 // Version is the version of the build.
 // Build details
 var (
-	Version string
-	Commit  string
-	Date    string
+	// For testing purposes, let's hard code Version and Date.
+	// TBD: Automated method for updating this file during release/tagging
+	Version = "v0.1.0"
+	// Short month notation
+	Date = "2020-Jul-09"
+	Commit string
 )
 
 // PrintVersion returns the version for the command version and --version flag

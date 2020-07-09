@@ -13,6 +13,7 @@ import (
 
 	"github.com/rolieup/golie/pkg/models"
 	"github.com/rolieup/golie/pkg/rolie_source"
+	"github.com/rolieup/golie/version"
 )
 
 func Clone(URI string, dir string) error {
@@ -98,6 +99,8 @@ func (f *fetcher) getRemoteResourceRaw(URI string) (io.ReadCloser, error) {
 	if err != nil {
 		return nil, err
 	}
+	// Send GolieVersion in Header
+	req.Header.Set("Golie-Version", version.Version)
 	req.Header.Set("Accept", "application/json")
 	response, err := client.Do(req)
 	if err != nil {
