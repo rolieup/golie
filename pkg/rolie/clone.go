@@ -9,10 +9,12 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 
 	"github.com/rolieup/golie/pkg/models"
 	"github.com/rolieup/golie/pkg/rolie_source"
+	"github.com/rolieup/golie/version"
 )
 
 func Clone(URI string, dir string) error {
@@ -98,6 +100,9 @@ func (f *fetcher) getRemoteResourceRaw(URI string) (io.ReadCloser, error) {
 	if err != nil {
 		return nil, err
 	}
+	// Send GolieVersion in Header
+	useragent := fmt.Sprintf("Golie/%s (%s/%s)", version.Version, runtime.GOOS, runtime.GOARCH)
+	req.Header.Add("User-Agent", useragent)
 	req.Header.Set("Accept", "application/json")
 	response, err := client.Do(req)
 	if err != nil {
