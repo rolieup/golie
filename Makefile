@@ -12,3 +12,8 @@ golied:
 
 test:
 	$(GO) test ./...
+
+vendor:
+	$(GO) mod tidy
+	$(GO) mod vendor
+	$(GO) mod verify
