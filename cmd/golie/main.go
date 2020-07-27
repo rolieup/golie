@@ -10,6 +10,7 @@ import (
 	"path"
 
 	"github.com/rolieup/golie/cmd/golie/clone"
+	"github.com/rolieup/golie/cmd/golie/info"
 	"github.com/rolieup/golie/cmd/golie/new"
 	golie "github.com/rolieup/golie/golie/client"
 	"github.com/rolieup/golie/version"
@@ -54,6 +55,7 @@ func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.AddCommand(new.Cmd)
 	rootCmd.AddCommand(clone.Cmd)
+	rootCmd.AddCommand(info.Cmd)
 	rootCmd.TraverseChildren = true
 	rootCmd.Version = fmt.Sprintf("%s, build: %s, date: %s", version.Version, version.Commit, version.Date)
 	rootCmd.PersistentFlags().BoolVar(&globalFlags.Debug, "debug", false, "Run in debug mode")
