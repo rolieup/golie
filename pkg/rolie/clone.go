@@ -15,6 +15,7 @@ import (
 	"github.com/rolieup/golie/pkg/models"
 	"github.com/rolieup/golie/pkg/rolie_source"
 	"github.com/rolieup/golie/version"
+	log "github.com/sirupsen/logrus"
 )
 
 func Clone(URI string, dir string) error {
@@ -92,7 +93,7 @@ func (f *fetcher) storeRemoteResource(URI string) error {
 }
 
 func (f *fetcher) getRemoteResourceRaw(URI string) (io.ReadCloser, error) {
-	fmt.Printf("Downloading %s\n", URI)
+	log.Infof("Downloading %s\n", URI)
 
 	client := &http.Client{}
 	// Make a request
