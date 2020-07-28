@@ -12,7 +12,6 @@ import (
 	"github.com/rolieup/golie/cmd/golie/clone"
 	"github.com/rolieup/golie/cmd/golie/info"
 	"github.com/rolieup/golie/cmd/golie/new"
-	golie "github.com/rolieup/golie/golie/client"
 	"github.com/rolieup/golie/version"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -39,10 +38,6 @@ var rootCmd = &cobra.Command{
 Information Exchange (ROLIE) specification.`,
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 		return setup(cmd)
-	},
-	RunE: func(cmd *cobra.Command, args []string) error {
-		golie.Client()
-		return nil
 	},
 }
 
