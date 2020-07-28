@@ -11,6 +11,7 @@ import (
 	"github.com/gocomply/scap/pkg/scap/scap_document"
 	"github.com/rolieup/golie/pkg/models"
 	"github.com/rolieup/golie/pkg/rolie_source"
+	log "github.com/sirupsen/logrus"
 )
 
 type Builder struct {
@@ -62,6 +63,7 @@ func (scap *scapFile) RolieEntry(baseUri string) (*models.Entry, error) {
 	var entry models.Entry
 	var err error
 
+	log.Debugf("Generating ROLIE Entry for %s", scap.Path)
 	entry.ID = scap.Document.Type.ShortName() + ":" + scap.Path
 	entry.Title, err = scap.Title()
 	if err != nil {
@@ -157,6 +159,7 @@ func traverseScapFiles(directoryPath string) (<-chan scapFile, error) {
 
 			doc, err := scap_document.ReadDocumentFromFile(path)
 			if err != nil {
+				log.Debugf("Skipping %s: could not be parsed: %v", path, err)
 				return nil
 			}
 			out <- scapFile{
