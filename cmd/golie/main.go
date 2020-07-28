@@ -59,7 +59,7 @@ func init() {
 	rootCmd.TraverseChildren = true
 	rootCmd.Version = fmt.Sprintf("%s, build: %s, date: %s", version.Version, version.Commit, version.Date)
 	rootCmd.PersistentFlags().BoolVar(&globalFlags.Debug, "debug", false, "Run in debug mode")
-	rootCmd.PersistentFlags().StringVar(&globalFlags.Loglevel, loglevel, "error", `Set log verbosity. Options are "debug", "info", "warn" or "error".`)
+	rootCmd.PersistentFlags().StringVar(&globalFlags.Loglevel, loglevel, "warn", `Set log verbosity. Options are "debug", "info", "warn" or "warn".`)
 }
 
 // initConfig reads in config file and ENV variables if set.
