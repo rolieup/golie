@@ -78,7 +78,7 @@ func (scap *scapFile) RolieEntry(baseUri string) (*models.Entry, error) {
 	entry.Updated = models.Time(scap.ModifiedTime)
 	entry.Published = models.Time(time.Now())
 	entry.Content = &models.Text{
-		Type: "applicatiton/xml",
+		Type: scap.MIMEType(),
 		Src:  scap.Link(baseUri),
 	}
 	entry.Format = &models.Format{
@@ -92,6 +92,13 @@ func (scap *scapFile) Link(baseUri string) string {
 	baseUri = strings.TrimSuffix(baseUri, "/")
 	path := strings.TrimPrefix(scap.Path, "/")
 	return baseUri + "/" + path
+}
+
+func (scap *scapFile) MIMEType() string {
+	if scap.Document.Bzip2 {
+		return "application/xml+x-bzip2"
+	}
+	return "application/xml"
 }
 
 func (scap *scapFile) Title() (string, error) {
@@ -153,7 +160,7 @@ func traverseScapFiles(directoryPath string) (<-chan scapFile, error) {
 			if err != nil {
 				return fmt.Errorf("Internal error: could not walk the filesystem: %v", err)
 			}
-			if info.IsDir() || !strings.HasSuffix(path, ".xml") {
+			if info.IsDir() || (!strings.HasSuffix(path, ".xml") && !strings.HasSuffix(path, ".xml.bz2")) {
 				return nil
 			}
 

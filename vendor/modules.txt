@@ -1,6 +1,7 @@
 # github.com/davecgh/go-spew v1.1.1
 github.com/davecgh/go-spew/spew
-# github.com/gocomply/scap v0.0.0-20200611111220-27dcc4e20641
+# github.com/gocomply/scap v0.1.0
+github.com/gocomply/scap/pkg/bz2
 github.com/gocomply/scap/pkg/scap/constants
 github.com/gocomply/scap/pkg/scap/models/cdf
 github.com/gocomply/scap/pkg/scap/models/cpe
