@@ -11,6 +11,10 @@ const (
 	AtomPublishingHttpUri  = "http://www.w3.org/2007/app"
 )
 
+type RolieRootElement interface {
+	MarshalXMLRootPrepare()
+}
+
 // Prepare xml root (top-level) element for marshaling
 func (s *Service) MarshalXMLRootPrepare() {
 	s.Xmlns = AtomPublishingHttpsUri

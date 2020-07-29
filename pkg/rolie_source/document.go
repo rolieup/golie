@@ -153,25 +153,18 @@ func (doc *Document) JSON(w io.Writer, prettify bool) error {
 
 // MarshalXML marshals either a catalog or a profile
 func (doc *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	var root models.RolieRootElement
 	if doc.Feed != nil {
-		doc.Feed.MarshalXMLRootPrepare()
-		if err := e.Encode(doc.Feed); err != nil {
-			return err
-		}
+		root = doc.Feed
 	} else if doc.Entry != nil {
-		doc.Entry.MarshalXMLRootPrepare()
-		if err := e.Encode(doc.Entry); err != nil {
-			return err
-		}
+		root = doc.Entry
 	} else if doc.Service != nil {
-		doc.Service.MarshalXMLRootPrepare()
-		if err := e.Encode(doc.Service); err != nil {
-			return err
-		}
+		root = doc.Service
 	} else {
 		return errors.New("Cannot marshal empty rolie document")
 	}
-	return nil
+	root.MarshalXMLRootPrepare()
+	return e.Encode(root)
 }
 
 func ensureXmlns(n *xml.Name, space, local string) {
