@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"errors"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
@@ -165,12 +164,4 @@ func (doc *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	root.MarshalXMLRootPrepare()
 	return e.Encode(root)
-}
-
-func ensureXmlns(n *xml.Name, space, local string) {
-	if n.Space == "" {
-		n.Space = space
-		n.Local = local
-	}
-	fmt.Println(n.Space)
 }
