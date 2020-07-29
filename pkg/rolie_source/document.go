@@ -47,19 +47,19 @@ func ReadDocument(r io.Reader) (*Document, error) {
 				if err := d.DecodeElement(&feed, &startElement); err != nil {
 					return nil, err
 				}
-				return &Document{Feed: &feed}, assertAtomNamespace(feed.XMLName.Space)
+				return &Document{Feed: &feed}, models.AssertAtomNamespace(feed.XMLName.Space)
 			case entryRootElement:
 				var entry models.Entry
 				if err := d.DecodeElement(&entry, &startElement); err != nil {
 					return nil, err
 				}
-				return &Document{Entry: &entry}, assertAtomNamespace(entry.XMLName.Space)
+				return &Document{Entry: &entry}, models.AssertAtomNamespace(entry.XMLName.Space)
 			case serviceRootElement:
 				var service models.Service
 				if err := d.DecodeElement(&service, &startElement); err != nil {
 					return nil, err
 				}
-				return &Document{Service: &service}, assertAtomPublishingNamespace(service.XMLName.Space)
+				return &Document{Service: &service}, models.AssertAtomPublishingNamespace(service.XMLName.Space)
 			}
 		}
 	}
@@ -129,28 +129,6 @@ func (doc *Document) WriteXML(filePath string) error {
 	defer file.Close()
 
 	return doc.XML(file, true)
-}
-
-func assertAtomNamespace(namespace string) error {
-	switch namespace {
-	case models.Atom2005HttpsUri:
-		fallthrough
-	case models.Atom2005HttpUri:
-		return nil
-	default:
-		return fmt.Errorf("Unknown xml namespace '%s' expected %s", namespace, models.Atom2005HttpsUri)
-	}
-}
-
-func assertAtomPublishingNamespace(namespace string) error {
-	switch namespace {
-	case models.AtomPublishingHttpsUri:
-		fallthrough
-	case models.AtomPublishingHttpUri:
-		return nil
-	default:
-		return fmt.Errorf("Unknown xml namespace '%s' expected %s", namespace, models.AtomPublishingHttpsUri)
-	}
 }
 
 // XML writes the Rolie object as XML to the given writer
