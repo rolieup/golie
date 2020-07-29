@@ -190,7 +190,7 @@ func (doc *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			return err
 		}
 	} else if doc.Service != nil {
-		doc.Entry.Xmlns = atomPublishingHttpsUri
+		doc.Service.Xmlns = atomPublishingHttpsUri
 		if err := e.Encode(doc.Service); err != nil {
 			return err
 		}
