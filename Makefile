@@ -13,6 +13,7 @@ golied:
 test:
 	$(GO) test ./...
 
+.PHONY: vendor
 vendor:
 	$(GO) mod tidy
 	$(GO) mod vendor
