@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<entry xmlns="https://www.w3.org/2005/Atom"
-    xmlns:rolie="urn:ietf:params:xml:ns:rolie-1.0"
-    xml:lang="en-US">
+<entry xmlns="https://www.w3.org/2005/Atom" xml:lang="en-US" xmlns:rolie="urn:ietf:params:xml:ns:rolie-1.0">
   <id>f63aafa9-4082-48a3-9ce6-97a2d69d4a9b</id>
   <title>Sample Vulnerability</title>
   <published>2015-08-04T18:13:51.0Z</published>
