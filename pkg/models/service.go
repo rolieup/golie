@@ -7,7 +7,8 @@ import "encoding/xml"
 
 type Service struct {
 	XMLName    xml.Name    `xml:"service" json:"-"`
-	Xmlns      string      `xml:"xmlns atom,attr" json:"-"`
+	Xmlns      string      `xml:"xmlns,attr" json:"-"`
+	Atomns     string      `xml:"xmlns:atom,attr" json:"-"`
 	Lang       string      `xml:"http://www.w3.org/XML/1998/namespace lang,attr,omitempty" json:"-"`
 	Workspaces []Workspace `xml:"workspace,omitempty" json:"workspace"`
 }

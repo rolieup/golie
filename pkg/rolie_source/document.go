@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"errors"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
@@ -14,13 +13,9 @@ import (
 )
 
 const (
-	feedRootElement        = "feed"
-	entryRootElement       = "entry"
-	serviceRootElement     = "service"
-	atom2005HttpsUri       = "https://www.w3.org/2005/Atom"
-	atom2005HttpUri        = "http://www.w3.org/2005/Atom"
-	atomPublishingHttpsUri = "https://www.w3.org/2007/app"
-	atomPublishingHttpUri  = "http://www.w3.org/2007/app"
+	feedRootElement    = "feed"
+	entryRootElement   = "entry"
+	serviceRootElement = "service"
 )
 
 // Rolie Document. Either Feed, Entry or Service
@@ -51,19 +46,19 @@ func ReadDocument(r io.Reader) (*Document, error) {
 				if err := d.DecodeElement(&feed, &startElement); err != nil {
 					return nil, err
 				}
-				return &Document{Feed: &feed}, assertAtomNamespace(feed.XMLName.Space)
+				return &Document{Feed: &feed}, models.AssertAtomNamespace(feed.XMLName.Space)
 			case entryRootElement:
 				var entry models.Entry
 				if err := d.DecodeElement(&entry, &startElement); err != nil {
 					return nil, err
 				}
-				return &Document{Entry: &entry}, assertAtomNamespace(entry.XMLName.Space)
+				return &Document{Entry: &entry}, models.AssertAtomNamespace(entry.XMLName.Space)
 			case serviceRootElement:
 				var service models.Service
 				if err := d.DecodeElement(&service, &startElement); err != nil {
 					return nil, err
 				}
-				return &Document{Service: &service}, assertAtomPublishingNamespace(service.XMLName.Space)
+				return &Document{Service: &service}, models.AssertAtomPublishingNamespace(service.XMLName.Space)
 			}
 		}
 	}
@@ -135,28 +130,6 @@ func (doc *Document) WriteXML(filePath string) error {
 	return doc.XML(file, true)
 }
 
-func assertAtomNamespace(namespace string) error {
-	switch namespace {
-	case atom2005HttpsUri:
-		fallthrough
-	case atom2005HttpUri:
-		return nil
-	default:
-		return fmt.Errorf("Unknown xml namespace '%s' expected %s", namespace, atom2005HttpsUri)
-	}
-}
-
-func assertAtomPublishingNamespace(namespace string) error {
-	switch namespace {
-	case atomPublishingHttpsUri:
-		fallthrough
-	case atomPublishingHttpUri:
-		return nil
-	default:
-		return fmt.Errorf("Unknown xml namespace '%s' expected %s", namespace, atomPublishingHttpsUri)
-	}
-}
-
 // XML writes the Rolie object as XML to the given writer
 func (doc *Document) XML(w io.Writer, prettify bool) error {
 	w.Write([]byte(xml.Header))
@@ -179,31 +152,16 @@ func (doc *Document) JSON(w io.Writer, prettify bool) error {
 
 // MarshalXML marshals either a catalog or a profile
 func (doc *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	var root models.RolieRootElement
 	if doc.Feed != nil {
-		doc.Feed.Xmlns = atom2005HttpsUri
-		if err := e.Encode(doc.Feed); err != nil {
-			return err
-		}
+		root = doc.Feed
 	} else if doc.Entry != nil {
-		doc.Entry.Xmlns = atom2005HttpsUri
-		if err := e.Encode(doc.Entry); err != nil {
-			return err
-		}
+		root = doc.Entry
 	} else if doc.Service != nil {
-		doc.Entry.Xmlns = atomPublishingHttpsUri
-		if err := e.Encode(doc.Service); err != nil {
-			return err
-		}
+		root = doc.Service
 	} else {
 		return errors.New("Cannot marshal empty rolie document")
 	}
-	return nil
-}
-
-func ensureXmlns(n *xml.Name, space, local string) {
-	if n.Space == "" {
-		n.Space = space
-		n.Local = local
-	}
-	fmt.Println(n.Space)
+	root.MarshalXMLRootPrepare()
+	return e.Encode(root)
 }

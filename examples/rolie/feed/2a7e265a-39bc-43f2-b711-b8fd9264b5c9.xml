@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<feed xmlns="https://www.w3.org/2005/Atom"
-    xmlns:rolie="urn:ietf:params:xml:ns:rolie-1.0"
-    xml:lang="en-US">
+<feed xmlns="https://www.w3.org/2005/Atom" xml:lang="en-US" xmlns:rolie="urn:ietf:params:xml:ns:rolie-1.0">
   <id>2a7e265a-39bc-43f2-b711-b8fd9264b5c9</id>
   <title type="text">
       Atom-formatted representation of

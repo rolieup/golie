@@ -39,7 +39,9 @@ type Generator struct {
 
 type Entry struct {
 	XMLName   xml.Name  `xml:"entry" json:"-"`
-	Xmlns     string    `xml:"xmlns,attr" json:"-"`
+	Xmlns     string    `xml:"xmlns,attr,omitempty" json:"-"`
+	Lang      string    `xml:"xml:lang,attr,omitempty" json:"-"`
+	Roliens   string    `xml:"xmlns:rolie,attr,omitempty" json:"-"`
 	ID        string    `xml:"id" json:"id"`
 	Title     string    `xml:"title" json:"title"`
 	Link      []Link    `xml:"link" json:"link,omitempty"`
