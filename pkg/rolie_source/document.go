@@ -14,13 +14,9 @@ import (
 )
 
 const (
-	feedRootElement        = "feed"
-	entryRootElement       = "entry"
-	serviceRootElement     = "service"
-	atom2005HttpsUri       = "https://www.w3.org/2005/Atom"
-	atom2005HttpUri        = "http://www.w3.org/2005/Atom"
-	atomPublishingHttpsUri = "https://www.w3.org/2007/app"
-	atomPublishingHttpUri  = "http://www.w3.org/2007/app"
+	feedRootElement    = "feed"
+	entryRootElement   = "entry"
+	serviceRootElement = "service"
 )
 
 // Rolie Document. Either Feed, Entry or Service
@@ -137,23 +133,23 @@ func (doc *Document) WriteXML(filePath string) error {
 
 func assertAtomNamespace(namespace string) error {
 	switch namespace {
-	case atom2005HttpsUri:
+	case models.Atom2005HttpsUri:
 		fallthrough
-	case atom2005HttpUri:
+	case models.Atom2005HttpUri:
 		return nil
 	default:
-		return fmt.Errorf("Unknown xml namespace '%s' expected %s", namespace, atom2005HttpsUri)
+		return fmt.Errorf("Unknown xml namespace '%s' expected %s", namespace, models.Atom2005HttpsUri)
 	}
 }
 
 func assertAtomPublishingNamespace(namespace string) error {
 	switch namespace {
-	case atomPublishingHttpsUri:
+	case models.AtomPublishingHttpsUri:
 		fallthrough
-	case atomPublishingHttpUri:
+	case models.AtomPublishingHttpUri:
 		return nil
 	default:
-		return fmt.Errorf("Unknown xml namespace '%s' expected %s", namespace, atomPublishingHttpsUri)
+		return fmt.Errorf("Unknown xml namespace '%s' expected %s", namespace, models.AtomPublishingHttpsUri)
 	}
 }
 
@@ -180,17 +176,17 @@ func (doc *Document) JSON(w io.Writer, prettify bool) error {
 // MarshalXML marshals either a catalog or a profile
 func (doc *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if doc.Feed != nil {
-		doc.Feed.Xmlns = atom2005HttpsUri
+		doc.Feed.Xmlns = models.Atom2005HttpsUri
 		if err := e.Encode(doc.Feed); err != nil {
 			return err
 		}
 	} else if doc.Entry != nil {
-		doc.Entry.Xmlns = atom2005HttpsUri
+		doc.Entry.Xmlns = models.Atom2005HttpsUri
 		if err := e.Encode(doc.Entry); err != nil {
 			return err
 		}
 	} else if doc.Service != nil {
-		doc.Service.Xmlns = atomPublishingHttpsUri
+		doc.Service.Xmlns = models.AtomPublishingHttpsUri
 		if err := e.Encode(doc.Service); err != nil {
 			return err
 		}
