@@ -14,9 +14,9 @@ import (
 var (
 	// For testing purposes, let's hard code Version and Date.
 	// TBD: Automated method for updating this file during release/tagging
-	Version = "v0.1.1"
+	Version = "v0.1.2"
 	// Short month notation
-	Date = "2020-Jul-22"
+	Date = "2020-Jul-30"
 	Commit string
 )
 
