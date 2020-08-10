@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/gocomply/scap/pkg/scap/constants"
@@ -19,6 +20,11 @@ type Builder struct {
 	Title         string
 	RootURI       string
 	DirectoryPath string
+}
+
+type entryResult struct {
+	entry *models.Entry
+	err   error
 }
 
 func (b *Builder) New() error {
@@ -42,18 +48,46 @@ func (b *Builder) feedForDirectory() (*models.Feed, error) {
 		Title:   b.Title,
 		Updated: models.Time(time.Now()),
 	}
-	for f := range scapFiles {
-		entry, err := f.RolieEntry(b.RootURI)
-		if err != nil {
-			return nil, err
-		}
-		feed.Entry = append(feed.Entry, entry)
+
+	entries := make(chan entryResult)
+	var wg sync.WaitGroup
+	for file := range scapFiles {
+		wg.Add(1)
+		go func(file scapFile) {
+			defer wg.Done()
+
+			doc, err := scap_document.ReadDocumentFromFile(file.AbsPath)
+			if err != nil {
+				log.Debugf("Skipping %s: could not be parsed: %v", file.AbsPath, err)
+				return
+			}
+
+			file.Document = doc // pass read document
+			entry, err := file.RolieEntry(b.RootURI)
+			entries <- entryResult{entry, err}
+		}(file)
 	}
-	return &feed, nil
+
+	// closer
+	go func() {
+		wg.Wait()
+		close(entries)
+	}()
+
+	for result := range entries {
+		if result.err != nil {
+			err = result.err // pass last error
+			continue
+		}
+		feed.Entry = append(feed.Entry, result.entry)
+	}
+
+	return &feed, err
 }
 
 type scapFile struct {
 	Path string
+	AbsPath string
 	*scap_document.Document
 	Size         int64
 	ModifiedTime time.Time
@@ -164,14 +198,10 @@ func traverseScapFiles(directoryPath string) (<-chan scapFile, error) {
 				return nil
 			}
 
-			doc, err := scap_document.ReadDocumentFromFile(path)
-			if err != nil {
-				log.Debugf("Skipping %s: could not be parsed: %v", path, err)
-				return nil
-			}
 			out <- scapFile{
 				Path:         strings.TrimPrefix(path, directoryPath),
-				Document:     doc,
+				AbsPath:      path,
+				Document:     nil, // deferred
 				Size:         info.Size(),
 				ModifiedTime: info.ModTime(),
 			}
