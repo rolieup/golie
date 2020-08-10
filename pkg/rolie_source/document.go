@@ -8,8 +8,10 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"strings"
 
 	"github.com/rolieup/golie/pkg/models"
+	"github.com/rolieup/golie/pkg/utils"
 )
 
 const (
@@ -98,6 +100,19 @@ func ReadDocumentFromFile(path string) (*Document, error) {
 		return nil, err
 	}
 	return ReadDocument(reader)
+}
+
+func ReadDocumentFromURI(uri string) (*Document, error) {
+	if strings.HasPrefix(uri, "http://") || strings.HasPrefix(uri, "https://") {
+		readCloser, err := utils.Acquire(uri)
+		if err != nil {
+			return nil, err
+		}
+		defer readCloser.Close()
+		return ReadDocument(readCloser)
+	} else {
+		return ReadDocumentFromFile(uri)
+	}
 }
 
 // Writes both json and xml files. Provide path without extension.

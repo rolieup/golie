@@ -5,8 +5,8 @@ import (
 	"github.com/rolieup/golie/pkg/rolie_source"
 )
 
-func Info(path string) error {
-	document, err := rolie_source.ReadDocumentFromFile(path)
+func Info(uri string) error {
+	document, err := rolie_source.ReadDocumentFromURI(uri)
 	if err != nil {
 		return fmt.Errorf("Failed to parse rolie document %s", err)
 	}
