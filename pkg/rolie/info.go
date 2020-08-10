@@ -25,6 +25,9 @@ func Info(uri string) error {
 			entries = "entry"
 		}
 		fmt.Printf("Contains %d %s.\n", len(feed.Entry), entries)
+		for _, e := range feed.Entry {
+			fmt.Printf("\t- %s (%s)\n", e.Title, e.ID)
+		}
 	} else if document.Service != nil {
 		fmt.Println("Document Type: ROLIE Service")
 		service := document.Service
