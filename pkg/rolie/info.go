@@ -5,8 +5,8 @@ import (
 	"github.com/rolieup/golie/pkg/rolie_source"
 )
 
-func Info(path string) error {
-	document, err := rolie_source.ReadDocumentFromFile(path)
+func Info(uri string) error {
+	document, err := rolie_source.ReadDocumentFromURI(uri)
 	if err != nil {
 		return fmt.Errorf("Failed to parse rolie document %s", err)
 	}
@@ -25,6 +25,9 @@ func Info(path string) error {
 			entries = "entry"
 		}
 		fmt.Printf("Contains %d %s.\n", len(feed.Entry), entries)
+		for _, e := range feed.Entry {
+			fmt.Printf("\t- %s (%s)\n", e.Title, e.ID)
+		}
 	} else if document.Service != nil {
 		fmt.Println("Document Type: ROLIE Service")
 		service := document.Service

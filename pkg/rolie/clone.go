@@ -3,19 +3,15 @@ package rolie
 import (
 	"bytes"
 	"fmt"
-	"io"
 	"io/ioutil"
-	"net/http"
 	"net/url"
 	"os"
 	"path/filepath"
-	"runtime"
 	"strings"
 
 	"github.com/rolieup/golie/pkg/models"
 	"github.com/rolieup/golie/pkg/rolie_source"
-	"github.com/rolieup/golie/version"
-	log "github.com/sirupsen/logrus"
+	"github.com/rolieup/golie/pkg/utils"
 )
 
 func Clone(URI string, dir string) error {
@@ -41,7 +37,7 @@ func (f *fetcher) Init() {
 }
 
 func (f *fetcher) Clone() error {
-	mainResource, err := f.getRemoteResourceRaw(f.URI)
+	mainResource, err := utils.Acquire(f.URI)
 	if err != nil {
 		return err
 	}
@@ -79,7 +75,7 @@ func (f *fetcher) cloneFeed(feed *models.Feed) error {
 }
 
 func (f *fetcher) storeRemoteResource(URI string) error {
-	mainResource, err := f.getRemoteResourceRaw(URI)
+	mainResource, err := utils.Acquire(URI)
 	if err != nil {
 		return err
 	}
@@ -90,29 +86,6 @@ func (f *fetcher) storeRemoteResource(URI string) error {
 		return err
 	}
 	return f.storeLocally(URI, rawBytes)
-}
-
-func (f *fetcher) getRemoteResourceRaw(URI string) (io.ReadCloser, error) {
-	log.Infof("Downloading %s\n", URI)
-
-	client := &http.Client{}
-	// Make a request
-	req, err := http.NewRequest("GET", URI, nil)
-	if err != nil {
-		return nil, err
-	}
-	// Send GolieVersion in Header
-	useragent := fmt.Sprintf("Golie/%s (%s/%s)", version.Version, runtime.GOOS, runtime.GOARCH)
-	req.Header.Add("User-Agent", useragent)
-	req.Header.Set("Accept", "application/json")
-	response, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	if response.StatusCode != 200 {
-		return nil, fmt.Errorf("Unexpected response %d from server on %s", response.StatusCode, URI)
-	}
-	return response.Body, nil
 }
 
 func (f *fetcher) storeLocally(URI string, content []byte) error {
