@@ -109,7 +109,7 @@ func (scap *scapFile) RolieEntry(baseUri string) (*models.Entry, error) {
 			Length: uint64(scap.Size),
 		},
 	}
-	entry.Updated = models.Time(scap.ModifiedTime)
+	entry.Updated = models.Time(scap.ModifiedTime) // when was entry modified in significant way? (see RFC 4287; 4.2.15.)
 	entry.Published = models.Time(time.Now())
 	entry.Content = &models.Text{
 		Type: scap.MIMEType(),
