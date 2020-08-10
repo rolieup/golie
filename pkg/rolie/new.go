@@ -79,6 +79,7 @@ func (b *Builder) feedForDirectory() (*models.Feed, error) {
 
 type scapFile struct {
 	Path string
+	AbsPath string
 	*scap_document.Document
 	Size         int64
 	ModifiedTime time.Time
@@ -196,6 +197,7 @@ func traverseScapFiles(directoryPath string) (<-chan scapFile, error) {
 			}
 			out <- scapFile{
 				Path:         strings.TrimPrefix(path, directoryPath),
+				AbsPath:      path,
 				Document:     doc,
 				Size:         info.Size(),
 				ModifiedTime: info.ModTime(),
