@@ -86,7 +86,7 @@ func (b *Builder) feedForDirectory() (*models.Feed, error) {
 }
 
 type scapFile struct {
-	Path string
+	Path    string
 	AbsPath string
 	*scap_document.Document
 	Size         int64
