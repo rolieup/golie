@@ -55,6 +55,14 @@ func (b *Builder) feedForDirectory() (*models.Feed, error) {
 		wg.Add(1)
 		go func(file scapFile) {
 			defer wg.Done()
+
+			doc, err := scap_document.ReadDocumentFromFile(file.AbsPath)
+			if err != nil {
+				log.Debugf("Skipping %s: could not be parsed: %v", file.AbsPath, err)
+				return
+			}
+
+			file.Document = doc // pass read document
 			entry, err := file.RolieEntry(b.RootURI)
 			entries <- entryResult{entry, err}
 		}(file)
@@ -68,7 +76,7 @@ func (b *Builder) feedForDirectory() (*models.Feed, error) {
 
 	for result := range entries {
 		if result.err != nil {
-			err = result.err  // pass last error
+			err = result.err // pass last error
 			continue
 		}
 		feed.Entry = append(feed.Entry, result.entry)
@@ -190,15 +198,10 @@ func traverseScapFiles(directoryPath string) (<-chan scapFile, error) {
 				return nil
 			}
 
-			doc, err := scap_document.ReadDocumentFromFile(path)
-			if err != nil {
-				log.Debugf("Skipping %s: could not be parsed: %v", path, err)
-				return nil
-			}
 			out <- scapFile{
 				Path:         strings.TrimPrefix(path, directoryPath),
 				AbsPath:      path,
-				Document:     doc,
+				Document:     nil, // deferred
 				Size:         info.Size(),
 				ModifiedTime: info.ModTime(),
 			}
