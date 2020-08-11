@@ -12,6 +12,7 @@ import (
 	"github.com/rolieup/golie/pkg/models"
 	"github.com/rolieup/golie/pkg/rolie_source"
 	"github.com/rolieup/golie/pkg/utils"
+	log "github.com/sirupsen/logrus"
 )
 
 func Clone(URI string, dir string) error {
@@ -64,11 +65,18 @@ func (f *fetcher) Clone() error {
 
 func (f *fetcher) cloneFeed(feed *models.Feed) error {
 	for _, entry := range feed.Entry {
-		if len(entry.Link) > 0 {
-			err := f.storeRemoteResource(entry.Link[0].Href)
-			if err != nil {
-				return err
-			}
+		err := f.cloneEntry(entry)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (f *fetcher) cloneEntry(entry *models.Entry) error {
+	if len(entry.Link) > 0 {
+		if f.needsRefresh(entry) {
+			return f.storeRemoteResource(entry.Link[0].Href)
 		}
 	}
 	return nil
@@ -100,6 +108,39 @@ func (f *fetcher) storeLocally(URI string, content []byte) error {
 		return err
 	}
 	return ioutil.WriteFile(path, content, 0644)
+}
+
+func (f *fetcher) needsRefresh(entry *models.Entry) bool {
+	link := entry.Link[0]
+	if link.Length == 0 {
+		return true
+	}
+	path, err := f.filepath(link.Href)
+	if err != nil {
+		log.Debugf("cannot compose local filepath for remote resource: %v", err)
+		return true
+	}
+	stat, err := os.Stat(path)
+	if err != nil {
+		return true
+	}
+	if stat.IsDir() {
+		return true
+	}
+	if link.Length != uint64(stat.Size()) {
+		return true
+	}
+	entryTime, err := entry.Updated.Time()
+	if err != nil {
+		return true
+	}
+	if stat.ModTime().Before(entryTime) {
+		return true
+	}
+
+	log.Debugf("Skipping download of %s", link.Href)
+
+	return false
 }
 
 func (f *fetcher) filepath(URI string) (string, error) {
