@@ -94,6 +94,10 @@ type Property struct {
 
 type TimeStr string
 
+func (ts TimeStr) Time() (time.Time, error) {
+	return time.Parse(time.RFC3339, string(ts))
+}
+
 func Time(t time.Time) TimeStr {
 	return TimeStr(t.Format(time.RFC3339))
 }
