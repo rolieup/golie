@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/rolieup/golie/pkg/models"
@@ -15,12 +16,16 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func Clone(URI string, dir string) error {
+func Clone(URI string, dir string, filter string) error {
 	f := fetcher{
 		URI:           URI,
 		DirectoryPath: dir,
+		Filter:        filter,
 	}
-	f.Init()
+	err := f.Init()
+	if err != nil {
+		return err
+	}
 	return f.Clone()
 }
 
@@ -28,13 +33,23 @@ type fetcher struct {
 	URI           string
 	BaseURI       string
 	DirectoryPath string
+	Filter        string
+	Re            *regexp.Regexp
 }
 
-func (f *fetcher) Init() {
+func (f *fetcher) Init() error {
 	idx := strings.LastIndex(f.URI, "/")
 	if idx != -1 && idx != len(f.URI) {
 		f.BaseURI = f.URI[:idx]
 	}
+	if f.Filter != "" {
+		re, err := regexp.Compile(f.Filter)
+		if err != nil {
+			return fmt.Errorf("could not compile regex %s: %s", f.Filter, err)
+		}
+		f.Re = re
+	}
+	return nil
 }
 
 func (f *fetcher) Clone() error {
@@ -74,12 +89,26 @@ func (f *fetcher) cloneFeed(feed *models.Feed) error {
 }
 
 func (f *fetcher) cloneEntry(entry *models.Entry) error {
-	if len(entry.Link) > 0 {
-		if f.needsRefresh(entry) {
-			return f.storeRemoteResource(entry.Link[0].Href)
-		}
+	if len(entry.Link) < 0 {
+		return nil
 	}
-	return nil
+	if !f.filtered(entry) {
+		log.Debugf("Skipping (filtered out) download of %s", entry.Link[0].Href)
+		return nil
+	}
+	if !f.needsRefresh(entry) {
+		return nil
+	}
+
+	return f.storeRemoteResource(entry.Link[0].Href)
+}
+
+func (f *fetcher) filtered(entry *models.Entry) bool {
+	if f.Re == nil {
+		return true
+	}
+	return f.Re.MatchString(entry.ID) || f.Re.MatchString(entry.Title)
+
 }
 
 func (f *fetcher) storeRemoteResource(URI string) error {
@@ -138,7 +167,7 @@ func (f *fetcher) needsRefresh(entry *models.Entry) bool {
 		return true
 	}
 
-	log.Debugf("Skipping download of %s", link.Href)
+	log.Debugf("Skipping (cached) download of %s", link.Href)
 
 	return false
 }

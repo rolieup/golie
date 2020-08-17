@@ -22,10 +22,15 @@ var Cmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return rolie.Clone(args[0], dir)
+		filter, err := cmd.Flags().GetString("filter")
+		if err != nil {
+			return err
+		}
+		return rolie.Clone(args[0], dir, filter)
 	},
 }
 
 func init() {
 	Cmd.Flags().String("dir", "./", "Directory to clone the feed into.")
+	Cmd.Flags().String("filter", "", "Filter downloaded files. Accepts regex that matches on rolie properties")
 }
