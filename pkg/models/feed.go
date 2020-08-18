@@ -20,8 +20,8 @@ type Feed struct {
 	Contributor *Contributor `xml:"contributor" json:"contributor,omitempty"`
 	Generator   *Generator   `xml:"generator,omitempty" json:"generator,omitempty"`
 	Rights      string       `xml:"rights,omitempty" json:"rights,omitempty"`
-	Link        []Link       `xml:"link" json:"link"`
-	Category    *Category    `xml:"category" json:"category"`
+	Link        []Link       `xml:"link,omitempty" json:"link,omitempty"`
+	Category    *Category    `xml:"category,omitempty" json:"category,omitempty"`
 	Updated     TimeStr      `xml:"updated" json:"updated"`
 	Entry       []*Entry     `xml:"entry" json:"entry"`
 }
