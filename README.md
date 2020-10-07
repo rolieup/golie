@@ -1,6 +1,6 @@
 # Golie - A Golang ROLIE Implementation
 
-![Golie Build CI](https://github.com/rolieup/golie/workflows/Golie%20Build%20CI/badge.svg)
+![Golie Build CI](https://github.com/rolieup/golie/workflows/Golie%20Build%20CI/badge.svg) [![PkgGoDev](https://pkg.go.dev/badge/github.com/rolieup/golie)](https://pkg.go.dev/github.com/rolieup/golie)
 
 A client/server implementation of the Resource-Oriented Lightweight Information Exchange (ROLIE) specification [RFC8322](https://tools.ietf.org/html/rfc8322)
 
