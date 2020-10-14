@@ -12,6 +12,7 @@ import (
 	"github.com/gocomply/scap/pkg/scap/scap_document"
 	"github.com/rolieup/golie/pkg/models"
 	"github.com/rolieup/golie/pkg/rolie_source"
+	"github.com/rolieup/golie/pkg/utils"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -90,6 +91,7 @@ type scapFile struct {
 	AbsPath string
 	*scap_document.Document
 	Size         int64
+	CreationTime time.Time
 	ModifiedTime time.Time
 }
 
@@ -110,7 +112,7 @@ func (scap *scapFile) RolieEntry(baseUri string) (*models.Entry, error) {
 		},
 	}
 	entry.Updated = models.Time(scap.ModifiedTime) // when was entry modified in significant way? (see RFC 4287; 4.2.15.)
-	entry.Published = models.Time(time.Now())
+	entry.Published = models.Time(scap.CreationTime)
 	entry.Content = &models.Text{
 		Type: scap.MIMEType(),
 		Src:  scap.Link(baseUri),
@@ -203,6 +205,7 @@ func traverseScapFiles(directoryPath string) (<-chan scapFile, error) {
 				AbsPath:      path,
 				Document:     nil, // deferred
 				Size:         info.Size(),
+				CreationTime: utils.FileCreationTime(info),
 				ModifiedTime: info.ModTime(),
 			}
 			return nil
